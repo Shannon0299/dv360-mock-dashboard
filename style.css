@@ -488,7 +488,7 @@ tbody tr:hover {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    align-items: flex-end;
+    align-items: flex-end; /* This new line fixes the alignment */
     background-color: var(--white);
     padding: 20px;
     border-radius: 8px;
