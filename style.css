@@ -1,11 +1,11 @@
-/* Using a universal selector for a basic CSS reset */
+/* Universal Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Defining color variables for easy theme management */
+/* Color Variables */
 :root {
     --primary-blue: #1a73e8;
     --background-grey: #f1f3f4;
@@ -13,9 +13,13 @@
     --text-dark: #202124;
     --text-light: #5f6368;
     --status-active-bg: #e6f4ea;
-    --status-active-text: #132573;
+    --status-active-text: #137333;
     --status-paused-bg: #feefc3;
     --status-paused-text: #b36300;
+    --status-in-review-bg: #e8f0fe;
+    --status-in-review-text: #1967d2;
+    --status-underspending-bg: #FCE8E6;
+    --status-underspending-text: #C5221F;
     --white: #ffffff;
     --shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
@@ -44,6 +48,13 @@ body {
     padding: 24px;
     font-size: 1.2rem;
     border-bottom: 1px solid var(--border-grey);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar-header h2 {
+    font-weight: 500;
 }
 
 .sidebar-nav ul {
@@ -62,7 +73,7 @@ body {
 
 .sidebar-nav li.active a {
     color: var(--primary-blue);
-    background-color: #DFECDE;
+    background-color: #e8f0fe;
 }
 
 .sidebar-nav li a:hover {
@@ -71,7 +82,7 @@ body {
 
 /* ===== Main Content Styling ===== */
 .main-content {
-    flex-grow: 1; /* Takes up the remaining space */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
@@ -93,8 +104,8 @@ main {
     margin-bottom: 20px;
 }
 
-.create-btn, #back-to-campaigns-btn {
-    background-color: #54A16A;
+.create-btn {
+    background-color: #673AB7;
     color: var(--white);
     border: none;
     padding: 10px 16px;
@@ -105,15 +116,8 @@ main {
     transition: background-color 0.2s;
 }
 
-.create-btn:hover, #back-to-campaigns-btn:hover {
-    background-color: #438255;
-}
-
-#back-to-campaigns-btn {
-    background-color: var(--text-light);
-}
-#back-to-campaigns-btn:hover {
-    background-color: var(--text-dark);
+.create-btn:hover {
+    background-color: #512DA8;
 }
 
 /* ===== Table Styling ===== */
@@ -121,7 +125,7 @@ main {
     background-color: var(--white);
     border-radius: 8px;
     box-shadow: var(--shadow);
-    overflow: hidden; /* Ensures the border-radius is respected by the table */
+    overflow: hidden;
 }
 
 table {
@@ -142,15 +146,6 @@ th {
     text-transform: uppercase;
 }
 
-tbody tr {
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-tbody tr:hover {
-    background-color: var(--background-grey);
-}
-
 .status {
     padding: 4px 8px;
     border-radius: 12px;
@@ -159,7 +154,7 @@ tbody tr:hover {
     display: inline-block;
 }
 
-.status-active {
+.status-approved, .status-active, .status-pacing-well {
     background-color: var(--status-active-bg);
     color: var(--status-active-text);
 }
@@ -169,79 +164,81 @@ tbody tr:hover {
     color: var(--status-paused-text);
 }
 
-/* ===== Detail View Styling ===== */
-.detail-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+.status-in-review {
+    background-color: var(--status-in-review-bg);
+    color: var(--status-in-review-text);
 }
 
-.io-card {
-    background-color: var(--white);
-    border-radius: 8px;
-    box-shadow: var(--shadow);
-    padding: 20px;
+.status-underspending {
+    background-color: var(--status-underspending-bg);
+    color: var(--status-underspending-text);
 }
 
-.io-card h3 {
-    margin-bottom: 8px;
-    color: var(--primary-blue);
-}
-
-.io-card p {
-    margin-bottom: 12px;
-    color: var(--text-light);
-    font-size: 0.9rem;
-}
-
-.line-items-list {
-    font-size: 0.9rem;
-    list-style-type: none;
-}
-
-.line-items-list li {
-    padding: 6px 0;
-    border-bottom: 1px solid var(--background-grey);
-}
-.line-items-list li:last-child {
-    border-bottom: none;
-}
-
-/* ===== Utility Classes ===== */
-.hidden {
-    display: none;
-}
-/* ===== New Dashboard Styling ===== */
-
-/* Grid for the top 3 stat cards */
+/* ===== Dashboard & Tabs Styling ===== */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
     margin-bottom: 40px;
 }
-
 .stat-card {
     background-color: var(--white);
     padding: 20px;
     border-radius: 8px;
     box-shadow: var(--shadow);
 }
-
 .stat-card h4 {
     font-size: 0.9rem;
     color: var(--text-light);
     font-weight: 500;
     margin-bottom: 8px;
 }
-
 .stat-card p {
     font-size: 1.8rem;
     font-weight: 500;
     color: var(--text-dark);
 }
-/* ===== New Modal and Form Styling ===== */
+.campaign-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.campaign-list-header h3 {
+    margin: 0;
+}
+.sub-navigation {
+    border-bottom: 1px solid var(--border-grey);
+    margin-bottom: 24px;
+}
+.sub-navigation ul {
+    list-style-type: none;
+    display: flex;
+    gap: 24px;
+}
+.sub-navigation li {
+    padding: 12px 4px;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-light);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.sub-navigation li:hover {
+    color: var(--text-dark);
+}
+.sub-navigation li.active-tab {
+    color: var(--primary-blue);
+    border-bottom-color: var(--primary-blue);
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active-tab-content {
+    display: block;
+}
 
+/* ===== Modal and Form Styling ===== */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -256,12 +253,10 @@ tbody tr:hover {
     opacity: 1;
     transition: opacity 0.3s ease;
 }
-
 .modal-overlay.hidden {
     opacity: 0;
     pointer-events: none;
 }
-
 .modal-content {
     background: var(--white);
     padding: 24px;
@@ -270,7 +265,6 @@ tbody tr:hover {
     width: 90%;
     max-width: 600px;
 }
-
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -279,7 +273,6 @@ tbody tr:hover {
     padding-bottom: 12px;
     margin-bottom: 20px;
 }
-
 .close-btn {
     background: none;
     border: none;
@@ -287,28 +280,22 @@ tbody tr:hover {
     cursor: pointer;
     color: var(--text-light);
 }
-
 .form-step {
-    display: none; /* Hide all steps by default */
+    display: none;
 }
-
 .form-step.active-step {
-    display: block; /* Show only the active step */
+    display: block;
 }
-
 .form-group {
     margin-bottom: 20px;
 }
-
 .form-group label {
     display: block;
     font-weight: 500;
     margin-bottom: 8px;
     font-size: 0.9rem;
 }
-
-.form-group input,
-.form-group select {
+.form-group input, .form-group select {
     width: 100%;
     padding: 10px;
     border: 1px solid var(--border-grey);
@@ -316,7 +303,6 @@ tbody tr:hover {
     font-size: 1rem;
     font-family: 'Roboto', sans-serif;
 }
-
 .form-navigation {
     display: flex;
     justify-content: space-between;
@@ -324,7 +310,6 @@ tbody tr:hover {
     padding-top: 16px;
     border-top: 1px solid var(--border-grey);
 }
-
 .secondary-btn {
     background-color: var(--background-grey);
     color: var(--text-dark);
@@ -335,51 +320,12 @@ tbody tr:hover {
     font-weight: 500;
     cursor: pointer;
 }
-/* ===== New Audience Module Styling ===== */
 
-/* Sub-navigation Tabs */
-.sub-navigation {
-    border-bottom: 1px solid var(--border-grey);
-    margin-bottom: 24px;
-}
-
-.sub-navigation ul {
-    list-style-type: none;
-    display: flex;
-    gap: 24px;
-}
-
-.sub-navigation li {
-    padding: 12px 4px;
-    cursor: pointer;
-    font-weight: 500;
-    color: var(--text-light);
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s ease;
-}
-
-.sub-navigation li:hover {
-    color: var(--text-dark);
-}
-
-.sub-navigation li.active-tab {
-    color: var(--primary-blue);
-    border-bottom-color: var(--primary-blue);
-}
-
-/* Tab Content Management */
-.tab-content {
-    display: none; /* Hide all tab content by default */
-}
-
-.tab-content.active-tab-content {
-    display: block; /* Show only the active tab's content */
-}
-
-/* Specific styling for the audience size column */
+/* ===== Specific Module Styling ===== */
 .audience-size-list {
     list-style-type: none;
     font-size: 0.9rem;
+    padding: 0;
 }
 .audience-size-list li {
     display: flex;
@@ -388,15 +334,11 @@ tbody tr:hover {
 .audience-size-list .media-type {
     color: var(--text-light);
 }
-/* ===== New Creatives Module Styling ===== */
-
-/* Format Gallery */
 .format-gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
 }
-
 .format-card {
     background-color: var(--white);
     padding: 24px;
@@ -404,24 +346,19 @@ tbody tr:hover {
     border: 1px solid var(--border-grey);
     box-shadow: var(--shadow);
 }
-
 .format-card h4 {
     color: var(--primary-blue);
     margin-bottom: 8px;
 }
-
 .format-card p {
     font-size: 0.9rem;
     color: var(--text-light);
     line-height: 1.5;
 }
-
-/* Ad Canvas Modal */
 .ad-canvas-body {
     display: flex;
     gap: 24px;
 }
-
 .ad-canvas-preview-area {
     flex-grow: 1;
     display: flex;
@@ -431,33 +368,27 @@ tbody tr:hover {
     border-radius: 8px;
     padding: 20px;
     transition: all 0.3s ease-in-out;
-    /* --- NEW LINES BELOW --- */
-    max-width: 768px;   /* It can't get wider than a tablet */
-    max-height: 80vh;   /* Limit height to 80% of the screen's height */
-    aspect-ratio: 1/1;  /* Default shape, will be changed by JS */
+    max-width: 768px;
+    max-height: 80vh;
+    aspect-ratio: 1/1;
 }
-
 .ad-canvas-preview-area img {
     max-width: 100%;
     max-height: 100%;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
-
 .ad-canvas-controls {
     width: 200px;
     flex-shrink: 0;
 }
-
 .ad-canvas-controls h4 {
     margin-bottom: 12px;
 }
-
 .device-switcher {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
-
 .device-btn {
     width: 100%;
     padding: 10px;
@@ -467,14 +398,11 @@ tbody tr:hover {
     cursor: pointer;
     font-weight: 500;
 }
-
 .device-btn.active-device {
     background-color: #e8f0fe;
     color: var(--primary-blue);
     border-color: var(--primary-blue);
 }
-
-/* Add a specific rule for the preview button in the table */
 .preview-btn {
     background: none;
     border: none;
@@ -482,8 +410,6 @@ tbody tr:hover {
     cursor: pointer;
     font-weight: 500;
 }
-/* ===== New Reporting Module Styling ===== */
-
 .report-controls {
     display: flex;
     flex-wrap: wrap;
@@ -494,7 +420,9 @@ tbody tr:hover {
     margin-bottom: 24px;
     box-shadow: var(--shadow);
 }
-
+.report-controls .create-btn {
+    margin-top: 26px;
+}
 .report-display-area {
     background-color: var(--white);
     padding: 20px;
@@ -502,23 +430,52 @@ tbody tr:hover {
     box-shadow: var(--shadow);
     min-height: 400px;
 }
-
-/* Logic to show/hide the correct visualization */
 .report-visual {
     display: none;
 }
 .report-visual.active-visual {
     display: block;
 }
-
-/* Container to give the charts a size */
 .chart-container {
     position: relative;
     height: 400px;
     width: 100%;
 }
-/* ===== Final Alignment Fix for Report Button ===== */
-.report-controls .create-btn {
-    /* This pushes the button down from the top to align it with the dropdowns */
-    margin-top: 26px; 
+.io-type-selection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+.io-type-card {
+    border: 1px solid var(--border-grey);
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.io-type-card:hover {
+    border-color: var(--primary-blue);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.io-type-card h5 {
+    color: var(--primary-blue);
+    margin-bottom: 8px;
+}
+.io-type-card p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+.info-box {
+    background-color: var(--background-grey);
+    border-radius: 4px;
+    padding: 12px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.5;
+    border-left: 3px solid var(--primary-blue);
+}
+/* Utility Classes */
+.hidden {
+    display: none;
 }
