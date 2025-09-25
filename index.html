@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mock DV360 Dashboard</title>
+    <!-- Correct, relative path to CSS file -->
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <!-- IMPORTANT: Loads the Chart.js library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Correct, relative path to JS file with defer -->
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -34,22 +36,53 @@
             </header>
 
             <main>
-                <!-- Main Campaigns Dashboard View -->
+                <!-- Campaigns Module View -->
                 <section id="campaign-view">
-                    <div class="view-header">
-                        <h2>Campaigns Dashboard</h2>
-                    </div>
-                    <div class="stats-grid">
-                        <div class="stat-card"><h4>Total Cost</h4><p>₹42,850.00</p></div>
-                        <div class="stat-card"><h4>Average CPA</h4><p>₹12.75</p></div>
-                        <div class="stat-card"><h4>Impressions Lost (Budget)</h4><p>1.2M</p></div>
-                    </div>
-                    <div class="campaign-list-container">
-                        <div class="campaign-list-header">
-                            <button id="create-campaign-btn" class="create-btn">+ New Campaign</button>
-                            <h3>Active Campaigns</h3>
+                    <div class="view-header"><h2>Campaigns</h2></div>
+                    <nav class="sub-navigation">
+                        <ul>
+                            <li class="active-tab" data-tab="combined-view">Combined</li>
+                            <li data-tab="insertion-orders-view">Insertion Orders</li>
+                            <li data-tab="line-items-view">Line Items</li>
+                        </ul>
+                    </nav>
+                    <div id="combined-view-content" class="tab-content active-tab-content">
+                        <div class="stats-grid">
+                            <div class="stat-card"><h4>Total Cost</h4><p>₹42,850.00</p></div>
+                            <div class="stat-card"><h4>Average CPA</h4><p>₹12.75</p></div>
+                            <div class="stat-card"><h4>Impressions Lost</h4><p>1.2M</p></div>
                         </div>
-                        <div id="campaign-list"></div>
+                        <div class="campaign-list-container">
+                            <div class="campaign-list-header">
+                                <button id="create-campaign-btn" class="create-btn">+ New Campaign</button>
+                                <h3>Active Campaigns</h3>
+                            </div>
+                            <div id="campaign-list"></div>
+                        </div>
+                    </div>
+                    <div id="insertion-orders-view-content" class="tab-content">
+                        <div class="stats-grid">
+                            <div class="stat-card"><h4>Total Cost</h4><p>₹3,85,400</p></div>
+                            <div class="stat-card"><h4>Average CPM</h4><p>₹215.50</p></div>
+                            <div class="stat-card"><h4>Impressions Lost</h4><p>850K</p></div>
+                        </div>
+                        <div class="campaign-list-header">
+                            <button id="new-insertion-order-btn" class="create-btn">+ New Insertion Order</button>
+                            <h3>All Insertion Orders</h3>
+                        </div>
+                        <div id="insertion-order-list-container"></div>
+                    </div>
+                    <div id="line-items-view-content" class="tab-content">
+                        <div class="stats-grid">
+                            <div class="stat-card"><h4>Total Cost</h4><p>₹1,95,700</p></div>
+                            <div class="stat-card"><h4>Average CPV</h4><p>₹2.45</p></div>
+                            <div class="stat-card"><h4>Impressions Lost</h4><p>420K</p></div>
+                        </div>
+                        <div class="campaign-list-header">
+                            <button id="new-line-item-btn" class="create-btn">+ New Line Item</button>
+                            <h3>All Line Items</h3>
+                        </div>
+                        <div id="line-item-list-container"></div>
                     </div>
                 </section>
 
@@ -64,19 +97,11 @@
                         </ul>
                     </nav>
                     <div id="all-audiences-content" class="tab-content active-tab-content">
-                        <div class="campaign-list-header">
-                            <button class="create-btn">+ New Audience</button>
-                        </div>
+                        <div class="campaign-list-header"><button class="create-btn">+ New Audience</button></div>
                         <div id="audience-list-container"></div>
                     </div>
-                    <div id="custom-lists-content" class="tab-content">
-                        <h3>Custom Lists</h3>
-                        <p>This is where you would create and manage custom affinity and custom intent audiences.</p>
-                    </div>
-                    <div id="analysis-content" class="tab-content">
-                        <h3>Audience Analysis</h3>
-                        <p>This is where you would perform a rich analysis of your audience composition.</p>
-                    </div>
+                    <div id="custom-lists-content" class="tab-content"><h3>Custom Lists</h3><p>This is where you would create and manage custom affinity and custom intent audiences.</p></div>
+                    <div id="analysis-content" class="tab-content"><h3>Audience Analysis</h3><p>This is where you would perform a rich analysis of your audience composition.</p></div>
                 </section>
                 
                 <!-- Creatives Module View -->
@@ -89,51 +114,18 @@
                             <li data-tab="data-driven-rules">Data-driven rules</li>
                         </ul>
                     </nav>
-                    <div id="creative-library-content" class="tab-content active-tab-content">
-                        <p style="margin-bottom: 20px; color: var(--text-light);">Manage and preview all your creative assets in one place.</p>
-                        <div id="creative-list-container"></div>
-                    </div>
-                    <div id="format-gallery-content" class="tab-content">
-                        <p style="margin-bottom: 20px; color: var(--text-light);">Discover innovative formats and browse templates for custom solutions.</p>
-                        <div class="format-gallery-grid">
-                            <div class="format-card"><h4>Standard Display</h4><p>Classic banner ads in all IAB sizes.</p></div>
-                            <div class="format-card"><h4>Rich Media</h4><p>Interactive HTML5 ads that engage users.</p></div>
-                            <div class="format-card"><h4>Video Preroll</h4><p>Video ads that play before YouTube content.</p></div>
-                            <div class="format-card"><h4>Native</h4><p>Ads that match the look and feel of the site.</p></div>
-                        </div>
-                    </div>
-                    <div id="data-driven-rules-content" class="tab-content">
-                         <p style="margin-bottom: 20px; color: var(--text-light);">Create variations of your message and set up rules to deliver your creative strategy.</p>
-                        <div id="campaign-table-container">
-                            <table>
-                                <thead><tr><th>Rule Name</th><th>Audience</th><th>Creative Variation</th><th>Priority</th></tr></thead>
-                                <tbody><tr><td>Target Cart Abandoners</td><td>Cart Abandoners (Combined)</td><td>Q4 Holiday Sale - 10% Off</td><td>High</td></tr></tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <div id="creative-library-content" class="tab-content active-tab-content"><p style="margin-bottom: 20px; color: var(--text-light);">Manage and preview all your creative assets in one place.</p><div id="creative-list-container"></div></div>
+                    <div id="format-gallery-content" class="tab-content"><p style="margin-bottom: 20px; color: var(--text-light);">Discover innovative formats and browse templates for custom solutions.</p><div class="format-gallery-grid"><div class="format-card"><h4>Standard Display</h4><p>Classic banner ads in all IAB sizes.</p></div><div class="format-card"><h4>Rich Media</h4><p>Interactive HTML5 ads that engage users.</p></div><div class="format-card"><h4>Video Preroll</h4><p>Video ads that play before YouTube content.</p></div><div class="format-card"><h4>Native</h4><p>Ads that match the look and feel of the site.</p></div></div></div>
+                    <div id="data-driven-rules-content" class="tab-content"><p style="margin-bottom: 20px; color: var(--text-light);">Create variations of your message and set up rules to deliver your creative strategy.</p><div id="campaign-table-container"><table><thead><tr><th>Rule Name</th><th>Audience</th><th>Creative Variation</th><th>Priority</th></tr></thead><tbody><tr><td>Target Cart Abandoners</td><td>Cart Abandoners (Combined)</td><td>Q4 Holiday Sale - 10% Off</td><td>High</td></tr></tbody></table></div></div>
                 </section>
                 
                 <!-- Reporting Module View -->
                 <section id="reporting-view" class="hidden">
                     <div class="view-header"><h2>Reporting</h2></div>
                     <div class="report-controls">
-                        <div class="form-group">
-                            <label>Visualization Type</label>
-                            <select id="visualization-type">
-                                <option value="table">Flat Table</option>
-                                <option value="bar">Bar Chart</option>
-                                <option value="line">Time Series (Line Chart)</option>
-                                <option value="pie">Pie Chart</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Dimension</label>
-                            <select id="report-dimension"><option>Campaign</option><option>Date</option></select>
-                        </div>
-                        <div class="form-group">
-                            <label>Metric</label>
-                            <select id="report-metric"><option>Impressions</option><option>Clicks</option></select>
-                        </div>
+                        <div class="form-group"><label>Visualization Type</label><select id="visualization-type"><option value="table">Flat Table</option><option value="bar">Bar Chart</option><option value="line">Time Series (Line Chart)</option><option value="pie">Pie Chart</option></select></div>
+                        <div class="form-group"><label>Dimension</label><select id="report-dimension"><option>Campaign</option><option>Date</option></select></div>
+                        <div class="form-group"><label>Metric</label><select id="report-metric"><option>Impressions</option><option>Clicks</option></select></div>
                         <button id="run-report-btn" class="create-btn">Run Report</button>
                     </div>
                     <div class="report-display-area">
@@ -147,63 +139,26 @@
         </div>
     </div>
 
-    <!-- ===== "CREATE CAMPAIGN" MODAL FORM ===== -->
+    <!-- ===== ALL MODALS ===== -->
+    
+    <!-- "Create Campaign" Modal -->
     <div id="campaign-modal-overlay" class="modal-overlay hidden">
-        <div class="modal-content">
-            <form id="create-campaign-form">
-                <div class="modal-header">
-                    <h3>Create New Campaign</h3>
-                    <button type="button" id="close-modal-btn" class="close-btn">&times;</button>
-                </div>
-                <!-- Step containers -->
-                <div class="form-step active-step">
-                    <h4>Step 1: Basic Details</h4>
-                    <div class="form-group"><label for="campaign-name">Campaign Name</label><input type="text" id="campaign-name" required></div>
-                    <div class="form-group"><label for="campaign-goal">Goal</label><select id="campaign-goal"><option>Raise awareness</option><option>Drive action</option></select></div>
-                    <div class="form-group"><label for="campaign-kpi">KPI</label><input type="text" id="campaign-kpi" value="CPM"></div>
-                </div>
-                <div class="form-step">
-                    <h4>Step 2: Settings</h4>
-                    <div class="form-group"><label for="planned-spend">Planned Spend</label><input type="number" id="planned-spend"></div>
-                    <div class="form-group"><label for="start-date">Planned Dates</label><div style="display: flex; gap: 10px;"><input type="date" id="start-date" required><input type="date" id="end-date" required></div></div>
-                </div>
-                <div class="form-step">
-                    <h4>Step 3: Default Targeting</h4>
-                    <div class="form-group"><label>Geography</label><input type="text" placeholder="e.g., Mumbai, Maharashtra"></div>
-                </div>
-                <!-- Navigation -->
-                <div class="form-navigation">
-                    <button type="button" id="back-btn" class="secondary-btn hidden">Back</button>
-                    <button type="button" id="next-btn" class="create-btn">Next</button>
-                    <button type="submit" id="submit-btn" class="create-btn hidden">Create Campaign</button>
-                </div>
-            </form>
-        </div>
+        <div class="modal-content"><form id="create-campaign-form"><div class="modal-header"><h3>Create New Campaign</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Step 1: Details</h4><div class="form-group"><label for="campaign-name">Campaign Name</label><input type="text" id="campaign-name" required></div><div class="form-group"><label for="campaign-goal">Goal</label><select id="campaign-goal"><option>Raise awareness</option><option>Drive action</option></select></div><div class="form-group"><label for="campaign-kpi">KPI</label><input type="text" id="campaign-kpi" value="CPM"></div></div><div class="form-step"><h4>Step 2: Settings</h4><div class="form-group"><label for="planned-spend">Planned Spend</label><input type="number" id="planned-spend"></div><div class="form-group"><label for="start-date">Planned Dates</label><div style="display: flex; gap: 10px;"><input type="date" id="start-date" required><input type="date" id="end-date" required></div></div></div><div class="form-step"><h4>Step 3: Targeting</h4><div class="form-group"><label>Geography</label><input type="text" placeholder="e.g., Mumbai, Maharashtra"></div></div><div class="form-navigation"><button type="button" id="back-btn" class="secondary-btn hidden">Back</button><button type="button" id="next-btn" class="create-btn">Next</button><button type="submit" id="submit-btn" class="create-btn hidden">Create Campaign</button></div></form></div>
+    </div>
+
+    <!-- "New Insertion Order" Modal -->
+    <div id="io-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content"><form id="create-io-form"><div class="modal-header"><h3>Create New Insertion Order</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Choose Insertion Order Type</h4><div class="io-type-selection"><div class="io-type-card"><h5>Real-time bidding</h5><p>Buy impressions via auctions.</p></div><div class="io-type-card"><h5>Story</h5><p>Tell a story across screens.</p></div></div></div><div class="form-step"><h4>Add New Line Item</h4><div class="form-group"><label for="line-item-name">Line Item Name</label><input type="text" id="line-item-name" required placeholder="e.g., Q4 Display Prospecting"></div><div class="form-group"><label for="line-item-type">Line Item Type</label><select id="line-item-type"><option>Display</option><option>Video</option><option>TrueView</option><option>Mobile app install</option></select></div></div><div class="form-navigation"><button type="button" id="io-back-btn" class="secondary-btn hidden">Back</button><button type="button" id="io-next-btn" class="create-btn">Next</button><button type="submit" id="io-submit-btn" class="create-btn hidden">Create</button></div></form></div>
+    </div>
+
+    <!-- "New Line Item" Modal -->
+    <div id="li-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content"><form id="create-li-form"><div class="modal-header"><h3>Create New Line Item</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Step 1: Type & Details</h4><div class="form-group"><label for="li-name">Line Item Name</label><input type="text" id="li-name" required placeholder="e.g., Diwali Video Prospecting"></div><div class="form-group"><label>Line Item Type</label><select id="li-type"><option>Display</option><option>Video</option><option>TrueView</option><option>Mobile app install</option></select></div></div><div class="form-step"><h4>Step 2: Bidding</h4><div class="form-group"><label for="bidding-strategy">Bidding Strategy</label><select id="bidding-strategy"><option>Automated Bidding</option><option>Fixed Bid</option><option>Target CPA</option></select></div><div class="info-box"><p><strong>Automated bidding in real time:</strong> Use an automated bid strategy to have Display & Video 360 dynamically change your bid based on the likelihood that an impression will lead to a click or conversion.</p></div></div><div class="form-navigation"><button type="button" id="li-back-btn" class="secondary-btn hidden">Back</button><button type="button" id="li-next-btn" class="create-btn">Next</button><button type="submit" id="li-submit-btn" class="create-btn hidden">Create</button></div></form></div>
     </div>
     
-    <!-- ===== "AD CANVAS" MODAL ===== -->
+    <!-- "Ad Canvas" Modal -->
     <div id="ad-canvas-modal-overlay" class="modal-overlay hidden">
-        <div class="modal-content" style="max-width: 900px;">
-            <div class="modal-header">
-                <h3 id="ad-canvas-title">Ad Canvas Preview</h3>
-                <button type="button" id="close-ad-canvas-btn" class="close-btn">&times;</button>
-            </div>
-            <div class="ad-canvas-body">
-                <div class="ad-canvas-preview-area">
-                    <img id="ad-canvas-image" src="" alt="Creative Preview">
-                </div>
-                <div class="ad-canvas-controls">
-                    <h4>Device Preview</h4>
-                    <div class="device-switcher">
-                        <button class="device-btn active-device" data-size="300x250">Desktop</button>
-                        <button class="device-btn" data-size="320x480">Mobile</button>
-                        <button class="device-btn" data-size="768x1024">Tablet</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="modal-content" style="max-width: 900px;"><div class="modal-header"><h3 id="ad-canvas-title">Ad Canvas Preview</h3><button type="button" class="close-btn">&times;</button></div><div class="ad-canvas-body"><div class="ad-canvas-preview-area"><img id="ad-canvas-image" src="" alt="Creative Preview"></div><div class="ad-canvas-controls"><h4>Device Preview</h4><div class="device-switcher"><button class="device-btn active-device" data-size="300x250">Desktop</button><button class="device-btn" data-size="320x480">Mobile</button><button class="device-btn" data-size="768x1024">Tablet</button></div></div></div></div>
     </div>
-
 </body>
 </html>
-
