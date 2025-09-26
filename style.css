@@ -215,6 +215,7 @@ th {
     list-style-type: none;
     display: flex;
     gap: 24px;
+    padding: 0;
 }
 .sub-navigation li {
     padding: 12px 4px;
@@ -320,6 +321,17 @@ th {
     font-weight: 500;
     cursor: pointer;
 }
+.date-group, .freq-cap-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.freq-cap-group input {
+    width: 80px;
+}
+.freq-cap-group select {
+    flex-grow: 1;
+}
 
 /* ===== Specific Module Styling ===== */
 .audience-size-list {
@@ -345,6 +357,16 @@ th {
     border-radius: 8px;
     border: 1px solid var(--border-grey);
     box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+}
+.format-card .card-content {
+    flex-grow: 1;
+}
+.format-card .card-actions {
+    margin-top: 16px;
+    border-top: 1px solid var(--border-grey);
+    padding-top: 12px;
 }
 .format-card h4 {
     color: var(--primary-blue);
@@ -475,6 +497,146 @@ th {
     line-height: 1.5;
     border-left: 3px solid var(--primary-blue);
 }
+.rules-builder {
+    display: flex;
+    gap: 20px;
+}
+.rules-column {
+    flex: 1;
+    background: var(--white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+.rules-column h4 {
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+.signal-card, .variant-card {
+    background-color: var(--background-grey);
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-grey);
+}
+.team-member-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: var(--white);
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+}
+.team-member-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--primary-blue);
+    color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+.team-member-details h4 {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+.team-member-details p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+.icon-btn:hover {
+    background-color: var(--background-grey);
+}
+.icon-btn svg {
+    color: var(--text-light);
+}
+.intelligence-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 360px;
+    height: 100%;
+    background-color: var(--white);
+    box-shadow: -2px 0 8px rgba(0,0,0,0.15);
+    z-index: 1100;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+.intelligence-panel.open {
+    transform: translateX(0);
+}
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-grey);
+    flex-shrink: 0;
+}
+.panel-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+.insight-card {
+    border: 1px solid var(--border-grey);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+.insight-header {
+    padding: 12px 16px;
+    font-weight: 500;
+}
+.insight-header.warning {
+    background-color: var(--status-paused-bg);
+    border-bottom: 1px solid var(--border-grey);
+}
+.insight-header.recommendation {
+    background-color: var(--status-in-review-bg);
+    border-bottom: 1px solid var(--border-grey);
+}
+.insight-body {
+    padding: 16px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.5;
+}
+.insight-actions {
+    padding: 0 16px 16px;
+    display: flex;
+    gap: 10px;
+}
+.action-btn {
+    background-color: var(--background-grey);
+    border: 1px solid var(--border-grey);
+    color: var(--text-dark);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
 /* Utility Classes */
 .hidden {
     display: none;
