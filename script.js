@@ -49,6 +49,17 @@ document.addEventListener('DOMContentLoaded', () => {
         action: ["CTR", "CPA", "CPC"],
         installs: ["CPIAVC", "CPA"]
     };
+    const myInventoryData = [
+        { name: "Times of India - Homepage Takeover", type: "Programmatic Guaranteed", status: "Active" },
+        { name: "Moneycontrol - Finance Section", type: "Preferred Deal", status: "Active" },
+        { name: "Hotstar - Pre-roll Package", type: "Private Auction", status: "Paused" }
+    ];
+    const marketplacePublisherData = [
+        { id: 1, name: "YouTube", impressions: "N/A", cookies: "N/A", display: "0%", video: "100%" },
+        { id: 2, name: "ReklamUp", impressions: "18B", cookies: "-", display: "5%", video: "95%" },
+        { id: 3, name: "Connrix Native Video", impressions: "9.48B", cookies: "54.6M", display: "0%", video: "50%" },
+        { id: 4, name: "LG Ads Solutions", impressions: "6.95B", cookies: "127M", display: "0%", video: "50%" }
+    ];
 
     // ===== DOM ELEMENT SELECTION =====
     const allViews = document.querySelectorAll('main > section');
@@ -62,6 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const creativeListContainer = document.getElementById('creative-list-container');
     const teamListContainer = document.getElementById('team-list-container');
     const formatGalleryContainer = document.getElementById('format-gallery-grid-container');
+    const myInventoryListContainer = document.getElementById('my-inventory-list-container');
+    const marketplaceTableContainer = document.getElementById('marketplace-table-container');
 
     const campaignTabs = document.querySelectorAll('#campaign-view .sub-navigation li');
     const campaignTabContents = document.querySelectorAll('#campaign-view .tab-content');
@@ -69,6 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const audienceTabContents = document.querySelectorAll('#audiences-view .tab-content');
     const creativeTabs = document.querySelectorAll('#creatives-view .sub-navigation li');
     const creativeTabContents = document.querySelectorAll('#creatives-view .tab-content');
+    const inventoryTabs = document.querySelectorAll('#inventory-view .sub-navigation li');
+    const inventoryTabContents = document.querySelectorAll('#inventory-view .tab-content');
     
     const createCampaignBtn = document.getElementById('create-campaign-btn');
     const campaignModal = document.getElementById('campaign-modal-overlay');
@@ -82,6 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const intelligencePanel = document.getElementById('intelligence-panel');
     const openIntelligencePanelBtn = document.getElementById('open-intelligence-panel-btn');
     const troubleshootModal = document.getElementById('troubleshoot-modal-overlay');
+    const requestProposalBtn = document.getElementById('request-proposal-btn');
+    const compareBtn = document.getElementById('compare-btn');
+    const rfpModal = document.getElementById('rfp-modal-overlay');
+    const compareModal = document.getElementById('compare-modal-overlay');
 
     const runReportBtn = document.getElementById('run-report-btn');
     const vizTypeSelect = document.getElementById('visualization-type');
@@ -107,29 +126,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderReportTable = (data) => { if (!reportTableContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Dimension</th><th>Metric</th></tr></thead><tbody>`; data.labels.forEach((label, index) => { html += `<tr><td>${label}</td><td>${formatNumber(data.data[index])}</td></tr>`; }); html += `</tbody></table></div>`; reportTableContainer.innerHTML = html; };
     const renderChart = (canvasId, chartInstance, type, data, label) => { const canvasEl = document.getElementById(canvasId); if (!canvasEl) return; if (chartInstance) chartInstance.destroy(); const datasets = [{ label, data: data.data, backgroundColor: ['#1a73e8', '#fbbc05', '#34a853', '#ea4335', '#4285f4'], borderColor: '#1a73e8', fill: false }]; return new Chart(canvasEl.getContext('2d'), { type, data: { labels: data.labels, datasets }, options: { responsive: true, maintainAspectRatio: false } }); };
     const renderIntelligencePanel = (alerts) => { const panelContent = document.getElementById('intelligence-panel-content'); if (!panelContent) return; let html = ''; alerts.forEach(alert => { const actionsHtml = alert.actions.map(action => `<button class="action-btn">${action}</button>`).join(''); html += `<div class="insight-card"><div class="insight-header ${alert.severity}">${alert.title}</div><div class="insight-body">${alert.description}</div><div class="insight-actions">${actionsHtml}</div></div>`; }); panelContent.innerHTML = html; };
+    const renderMyInventoryTable = (data) => { if (!myInventoryListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Deal Name</th><th>Type</th><th>Status</th></tr></thead><tbody>`; data.forEach(deal => { html += `<tr><td>${deal.name}</td><td>${deal.type}</td><td><span class="status status-${deal.status.toLowerCase()}">${deal.status}</span></td></tr>`; }); html += `</tbody></table></div>`; myInventoryListContainer.innerHTML = html; };
+    const renderMarketplaceTable = (data) => { if (!marketplaceTableContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th><input type="checkbox" id="select-all-publishers"></th><th>Publisher</th><th>Impressions</th><th>Cookies</th><th>Display</th><th>Video</th></tr></thead><tbody>`; data.forEach(p => { html += `<tr data-id="${p.id}"><td><input type="checkbox" class="publisher-checkbox"></td><td><strong>${p.name}</strong></td><td>${p.impressions}</td><td>${p.cookies}</td><td>${p.display}</td><td>${p.video}</td></tr>`; }); html += `</tbody></table></div>`; marketplaceTableContainer.innerHTML = html; };
+    const renderCompareModal = (selectedPublishers) => { const grid = document.getElementById('compare-grid-container'); if (!grid) return; let html = ''; selectedPublishers.forEach(p => { const fullData = marketplacePublisherData.find(pub => pub.id === p); html += `<div class="compare-card"><h4>${fullData.name}</h4><p><strong>Impressions:</strong> ${fullData.impressions}</p><p><strong>Cookies:</strong> ${fullData.cookies}</p><p><strong>Display / Video:</strong> ${fullData.display} / ${fullData.video}</p></div>`; }); grid.innerHTML = html;};
     
-    const updateKpiOptions = () => {
-        if (!campaignGoalSelect || !campaignKpiSelect) return;
-        const selectedGoal = campaignGoalSelect.value;
-        const kpiOptions = kpiOptionsByGoal[selectedGoal] || [];
-        campaignKpiSelect.innerHTML = kpiOptions.map(kpi => `<option>${kpi}</option>`).join('');
-    };
+    const updateKpiOptions = () => { if (!campaignGoalSelect || !campaignKpiSelect) return; const selectedGoal = campaignGoalSelect.value; const kpiOptions = kpiOptionsByGoal[selectedGoal] || []; campaignKpiSelect.innerHTML = kpiOptions.map(kpi => `<option>${kpi}</option>`).join(''); };
 
     // ===== EVENT LISTENERS =====
     const showView = (viewId) => { allViews.forEach(v => v.classList.add('hidden')); const vts = document.getElementById(viewId); if (vts) vts.classList.remove('hidden'); };
-    if (sidebarNav) { sidebarNav.addEventListener('click', (event) => { event.preventDefault(); const link = event.target.closest('a'); if (!link) return; navLinks.forEach(l => l.classList.remove('active')); link.parentElement.classList.add('active'); const text = link.textContent.toLowerCase(); let viewId = 'campaign-view'; if (text.includes('audiences')) viewId = 'audiences-view'; else if (text.includes('creatives')) viewId = 'creatives-view'; else if (text.includes('reporting')) viewId = 'reporting-view'; showView(viewId); }); }
+    if (sidebarNav) { sidebarNav.addEventListener('click', (event) => { event.preventDefault(); const link = event.target.closest('a'); if (!link) return; navLinks.forEach(l => l.classList.remove('active')); link.parentElement.classList.add('active'); const text = link.textContent.toLowerCase(); let viewId = 'campaign-view'; if (text.includes('audiences')) viewId = 'audiences-view'; else if (text.includes('creatives')) viewId = 'creatives-view'; else if (text.includes('inventory')) viewId = 'inventory-view'; else if (text.includes('reporting')) viewId = 'reporting-view'; showView(viewId); }); }
     
-    const setupTabs = (tabs, contents) => { if (tabs && contents) { tabs.forEach(tab => tab.addEventListener('click', () => { const id = tab.dataset.tab; tabs.forEach(t => t.classList.remove('active-tab')); tab.classList.add('active-tab'); contents.forEach(c => c.classList.toggle('active-tab-content', c.id === `${id}-content`)); })); }};
+    const setupTabs = (tabs, contents) => { if (tabs && contents.length) { tabs.forEach(tab => tab.addEventListener('click', () => { const id = tab.dataset.tab; tabs.forEach(t => t.classList.remove('active-tab')); tab.classList.add('active-tab'); contents.forEach(c => c.classList.toggle('active-tab-content', c.id === `${id}-content`)); })); }};
     setupTabs(campaignTabs, campaignTabContents);
     setupTabs(audienceTabs, audienceTabContents);
     setupTabs(creativeTabs, creativeTabContents);
+    setupTabs(inventoryTabs, inventoryTabContents);
 
-    const setupModal = (btn, modal, onsubmit) => { if (!btn || !modal) return; const form = modal.querySelector('form'); const steps = modal.querySelectorAll('.form-step'); const nextBtn = modal.querySelector('[id*="-next-btn"]') || modal.querySelector('.create-btn'); const backBtn = modal.querySelector('[id*="-back-btn"]'); const submitBtn = modal.querySelector('[id*="-submit-btn"]') || (form ? form.querySelector('[type="submit"]') : null); let currentStep = 0; const openModal = () => { currentStep = 0; showStep(0); if (form) form.reset(); modal.classList.remove('hidden'); }; const closeModal = () => modal.classList.add('hidden'); const showStep = (i) => { if (steps && steps.length > 0) { steps.forEach((s, ix) => s.classList.toggle('active-step', ix === i)); } if (backBtn) backBtn.classList.toggle('hidden', i === 0); if (nextBtn) nextBtn.classList.toggle('hidden', i === steps.length - 1); if (submitBtn) submitBtn.classList.toggle('hidden', i !== steps.length - 1); }; btn.addEventListener('click', openModal); modal.querySelector('.close-btn').addEventListener('click', closeModal); if (nextBtn) nextBtn.addEventListener('click', () => { if (steps && currentStep < steps.length - 1) { currentStep++; showStep(currentStep); } }); if (backBtn) backBtn.addEventListener('click', () => { if (currentStep > 0) { currentStep--; showStep(currentStep); } }); if (form) form.addEventListener('submit', (e) => { e.preventDefault(); onsubmit(closeModal); }); };
+    const setupModal = (btn, modal, onsubmit) => { if (!btn || !modal) return; const form = modal.querySelector('form'); const steps = modal.querySelectorAll('.form-step'); const nextBtn = modal.querySelector('[id*="-next-btn"]') || modal.querySelector('.create-btn'); const backBtn = modal.querySelector('[id*="-back-btn"]'); const submitBtn = modal.querySelector('[id*="-submit-btn"]') || (form ? form.querySelector('[type="submit"]') : null); let currentStep = 0; const openModal = () => { currentStep = 0; showStep(0); if (form) form.reset(); modal.classList.remove('hidden'); }; const closeModal = () => modal.classList.add('hidden'); const showStep = (i) => { if (steps && steps.length > 0) { steps.forEach((s, ix) => s.classList.toggle('active-step', ix === i)); } if (backBtn) backBtn.classList.toggle('hidden', i === 0); if (nextBtn && steps.length > 0) nextBtn.classList.toggle('hidden', i === steps.length - 1); if (submitBtn && steps.length > 0) submitBtn.classList.toggle('hidden', i !== steps.length - 1); }; btn.addEventListener('click', openModal); modal.querySelector('.close-btn').addEventListener('click', closeModal); if (nextBtn) nextBtn.addEventListener('click', () => { if (steps && currentStep < steps.length - 1) { currentStep++; showStep(currentStep); } }); if (backBtn) backBtn.addEventListener('click', () => { if (currentStep > 0) { currentStep--; showStep(currentStep); } }); if (form) form.addEventListener('submit', (e) => { e.preventDefault(); onsubmit(closeModal); }); };
     
     setupModal(createCampaignBtn, campaignModal, (close) => { const nc = { name: campaignModal.querySelector('#campaign-name').value, budget: parseFloat(campaignModal.querySelector('#planned-spend').value) || 0, spent: 0, kpiGoal: 1, kpiActual: 0 }; campaignListData.push(nc); renderCampaignList(campaignListData); close(); });
     setupModal(newIoBtn, ioModal, (close) => { const nio = { name: ioModal.querySelector('#line-item-name').value, campaign: "Pre-Diwali Brand Awareness", status: "Active", budget: 0, spent: 0 }; insertionOrderData.push(nio); renderInsertionOrderTable(insertionOrderData); alert("New Insertion Order & Line Item Created!"); close(); });
     setupModal(newLineItemBtn, liModal, (close) => { const nli = { name: liModal.querySelector('#li-name').value, insertionOrder: "IO-01: Diwali Promo", type: liModal.querySelector('#li-type').value, status: "In Review" }; lineItemData.push(nli); renderLineItemTable(lineItemData); close(); });
     setupModal(newUserBtn, userModal, (close) => { alert('New user added!'); close(); });
+    setupModal(requestProposalBtn, rfpModal, (close) => { alert('RFP Sent!'); close(); });
+    setupModal(compareBtn, compareModal, () => {});
 
     if (adCanvasModal) { const openAdCanvas = (creativeId) => { const creative = creativeListData.find(c => c.id === creativeId); if (!creative) return; adCanvasModal.querySelector('#ad-canvas-title').textContent = `Ad Canvas: ${creative.name}`; adCanvasModal.querySelector('#ad-canvas-image').src = creative.imageUrl; const defaultDevice = adCanvasModal.querySelector('[data-size="300x250"]'); if (defaultDevice) defaultDevice.click(); adCanvasModal.classList.remove('hidden'); }; adCanvasModal.querySelector('.close-btn').addEventListener('click', () => adCanvasModal.classList.add('hidden')); if (creativeListContainer) { creativeListContainer.addEventListener('click', (e) => { if (e.target.classList.contains('preview-btn')) { openAdCanvas(parseInt(e.target.dataset.creativeId, 10)); } }); } if (formatGalleryContainer) { formatGalleryContainer.addEventListener('click', (e) => { if (e.target.classList.contains('format-create-btn')) { openAdCanvas(parseInt(e.target.dataset.creativeId, 10)); } }); } const adCanvasPreviewArea = adCanvasModal.querySelector('.ad-canvas-preview-area'); const deviceSwitcher = adCanvasModal.querySelector('.device-switcher'); if (deviceSwitcher) { deviceSwitcher.addEventListener('click', (e) => { if (e.target.classList.contains('device-btn')) { const [w, h] = e.target.dataset.size.split('x'); adCanvasPreviewArea.style.aspectRatio = `${w} / ${h}`; deviceSwitcher.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active-device')); e.target.classList.add('active-device'); } }); }}
     
@@ -138,6 +158,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (intelligencePanel) { openIntelligencePanelBtn.addEventListener('click', () => intelligencePanel.classList.add('open')); document.getElementById('close-intelligence-panel-btn').addEventListener('click', () => intelligencePanel.classList.remove('open')); const panelContent = document.getElementById('intelligence-panel-content'); if (panelContent) { panelContent.addEventListener('click', (e) => { if (e.target.classList.contains('action-btn') && e.target.textContent === 'Troubleshoot') { if (troubleshootModal) troubleshootModal.classList.remove('hidden'); } }); } }
     if (troubleshootModal) { troubleshootModal.querySelector('.close-btn').addEventListener('click', () => troubleshootModal.classList.add('hidden')); }
     if (campaignGoalSelect) { campaignGoalSelect.addEventListener('change', updateKpiOptions); }
+    if (marketplaceTableContainer) { const updateSelectionBar = () => { const selectedCheckboxes = marketplaceTableContainer.querySelectorAll('.publisher-checkbox:checked'); const count = selectedCheckboxes.length; const actionBar = document.getElementById('selection-action-bar'); if(actionBar) { if (count > 0) { actionBar.classList.remove('hidden'); actionBar.querySelector('#selection-count').textContent = `${count} row${count > 1 ? 's' : ''} selected`; requestProposalBtn.disabled = false; compareBtn.disabled = count > 3 || count < 2; } else { actionBar.classList.add('hidden'); } } }; marketplaceTableContainer.addEventListener('change', (e) => { const target = e.target; if (target.id === 'select-all-publishers') { marketplaceTableContainer.querySelectorAll('.publisher-checkbox').forEach(cb => { cb.checked = target.checked; cb.closest('tr').classList.toggle('selected-row', target.checked); }); } else if (target.classList.contains('publisher-checkbox')) { target.closest('tr').classList.toggle('selected-row', target.checked); } updateSelectionBar(); }); }
+    if(rfpModal) { requestProposalBtn.addEventListener('click', () => { const selectedCards = marketplaceTableContainer.querySelectorAll('.selected-row'); const publisherList = rfpModal.querySelector('#rfp-publisher-list'); if(publisherList) { publisherList.innerHTML = ''; selectedCards.forEach(card => { const li = document.createElement('li'); li.textContent = marketplacePublisherData.find(p => p.id === parseInt(card.dataset.id)).name; publisherList.appendChild(li); }); } }); }
+    if(compareModal) { compareBtn.addEventListener('click', () => { const selectedIds = Array.from(marketplaceTableContainer.querySelectorAll('.selected-row')).map(row => parseInt(row.dataset.id)); renderCompareModal(selectedIds); }); }
 
     // ===== INITIALIZATION =====
     showView('campaign-view');
@@ -151,4 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderReportTable(reportData.campaign);
     renderIntelligencePanel(intelligenceAlertsData);
     updateKpiOptions();
+    renderMyInventoryTable(myInventoryData);
+    renderMarketplaceTable(marketplacePublisherData);
 });
