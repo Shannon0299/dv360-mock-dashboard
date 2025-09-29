@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mock DV360 Dashboard</title>
-    <!-- Correct, relative path to CSS file -->
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- IMPORTANT: Loads the Chart.js library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Correct, relative path to JS file with defer -->
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -24,6 +21,7 @@
                     <li class="active"><a href="#">Campaigns</a></li>
                     <li><a href="#">Audiences</a></li>
                     <li><a href="#">Creatives</a></li>
+                    <li><a href="#">Inventory</a></li>
                     <li><a href="#">Reporting</a></li>
                 </ul>
             </nav>
@@ -126,6 +124,57 @@
                     <div id="team-content" class="tab-content"><div class="campaign-list-header"><button id="new-user-btn" class="create-btn">+ New User</button><h3>Creative Team Members</h3></div><div id="team-list-container"></div></div>
                 </section>
                 
+                <!-- Inventory Module View -->
+                <section id="inventory-view" class="hidden">
+                    <div class="view-header"><h2>Inventory</h2></div>
+                    <nav class="sub-navigation">
+                        <ul>
+                            <li class="active-tab" data-tab="my-inventory">My Inventory</li>
+                            <li data-tab="marketplace">Marketplace</li>
+                            <li data-tab="negotiations">Negotiations</li>
+                        </ul>
+                    </nav>
+                    <div id="my-inventory-content" class="tab-content active-tab-content">
+                        <div class="campaign-list-header"><h3>All Deals</h3></div>
+                        <div id="my-inventory-list-container"></div>
+                    </div>
+                    <div id="marketplace-content" class="tab-content">
+                        <div class="marketplace-layout">
+                            <div class="marketplace-main">
+                                <nav class="marketplace-tabs">
+                                    <span class="active">Publishers (100+)</span>
+                                    <span>Inventory Packages (85)</span>
+                                </nav>
+                                <div id="selection-action-bar" class="selection-action-bar hidden">
+                                    <span id="selection-count">3 rows selected</span>
+                                    <button id="request-proposal-btn" class="create-btn">Request Proposal</button>
+                                    <button id="compare-btn" class="secondary-btn">Compare</button>
+                                    <button class="secondary-btn">Download</button>
+                                </div>
+                                <div id="marketplace-table-container"></div>
+                            </div>
+                            <aside class="marketplace-filters">
+                                <h4>Filter Inventory</h4>
+                                <div class="form-group">
+                                    <p class="filter-label">Who will the ad be shown to?</p>
+                                    <p class="filter-sub-label">Age: 18-65+</p>
+                                    <div class="slider-placeholder"><div></div></div>
+                                </div>
+                                <div class="form-group">
+                                    <p class="filter-label">User geo</p>
+                                    <div class="tag-group"><span class="tag">Canada <button>&times;</button></span><span class="tag">United States <button>&times;</button></span></div>
+                                </div>
+                                <button class="create-btn" style="width: 100%;">Apply</button>
+                            </aside>
+                        </div>
+                    </div>
+                    <div id="negotiations-content" class="tab-content">
+                        <h3>Negotiations</h3>
+                        <p>Manage ongoing conversations with publishers here.</p>
+                        <div id="negotiations-list-container"></div>
+                    </div>
+                </section>
+                
                 <!-- Reporting Module View -->
                 <section id="reporting-view" class="hidden">
                     <div class="view-header"><h2>Reporting</h2></div>
@@ -147,41 +196,14 @@
     </div>
 
     <!-- ===== ALL MODALS ===== -->
-    
-    <div id="campaign-modal-overlay" class="modal-overlay hidden">
-        <div class="modal-content">
-            <form id="create-campaign-form">
-                <div class="modal-header"><h3>Create New Campaign</h3><button type="button" class="close-btn">&times;</button></div>
-                <div class="form-step active-step">
-                    <h4>Step 1: Goal & Settings</h4>
-                    <div class="form-group"><label for="campaign-name">Campaign Name</label><input type="text" id="campaign-name" required placeholder="e.g., Q4 Diwali Sale"></div>
-                    <div class="form-group"><label for="campaign-goal">Goal</label><select id="campaign-goal"><option value="awareness">Raise awareness of my brand or product</option><option value="action">Drive online action or visits</option><option value="installs">Drive app installs or engagements</option></select></div>
-                    <div class="form-group"><label for="campaign-kpi">Key Performance Indicator (KPI)</label><select id="campaign-kpi"></select></div>
-                    <div class="form-group"><label for="planned-spend">Planned Spend (Optional)</label><input type="number" id="planned-spend" placeholder="e.g., 500000"></div>
-                    <div class="form-group"><label for="start-date">Planned Dates</label><div class="date-group"><input type="date" id="start-date" required><input type="date" id="end-date" required></div></div>
-                </div>
-                <div class="form-step">
-                    <h4>Step 2: Creatives & Frequency</h4>
-                    <div class="form-group"><label for="creative-type">Creative Type</label><select id="creative-type"><option>Display</option><option>Video</option><option>Audio</option></select></div>
-                    <div class="form-group"><label>Campaign-Level Frequency Cap</label><div class="freq-cap-group"><input type="number" id="freq-cap-impressions" value="3"><span>impressions per</span><input type="number" id="freq-cap-duration" value="24"><select id="freq-cap-period"><option>Hours</option><option>Days</option><option>Weeks</option></select></div></div>
-                    <div class="info-box"><p>Frequency caps work across multiple insertion orders. Serving will stop once the first cap at any level (campaign, IO, or line item) is reached.</p></div>
-                </div>
-                <div class="form-step">
-                    <h4>Step 3: Default Targeting</h4>
-                    <div class="form-group"><label>Inventory Source</label><select id="inventory-source"><option>Public Inventory</option><option>Deals and Auction Packages</option></select></div>
-                    <div class="form-group"><label>Geography</label><input type="text" placeholder="e.g., Mumbai, Maharashtra"></div>
-                    <div class="form-group"><label>Brand Safety</label><select><option>Block all sensitive categories</option><option>Apply limited restrictions</option></select></div>
-                </div>
-                <div class="form-navigation"><button type="button" id="back-btn" class="secondary-btn hidden">Back</button><button type="button" id="next-btn" class="create-btn">Next</button><button type="submit" id="submit-btn" class="create-btn hidden">Create Campaign</button></div>
-            </form>
-        </div>
-    </div>
+    <div id="campaign-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-campaign-form"><div class="modal-header"><h3>Create New Campaign</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Step 1: Goal & Settings</h4><div class="form-group"><label for="campaign-name">Campaign Name</label><input type="text" id="campaign-name" required placeholder="e.g., Q4 Diwali Sale"></div><div class="form-group"><label for="campaign-goal">Goal</label><select id="campaign-goal"><option value="awareness">Raise awareness</option><option value="action">Drive online action</option><option value="installs">Drive app installs</option></select></div><div class="form-group"><label for="campaign-kpi">Key Performance Indicator (KPI)</label><select id="campaign-kpi"></select></div><div class="form-group"><label for="planned-spend">Planned Spend (Optional)</label><input type="number" id="planned-spend" placeholder="e.g., 500000"></div><div class="form-group"><label for="start-date">Planned Dates</label><div class="date-group"><input type="date" id="start-date" required><input type="date" id="end-date" required></div></div></div><div class="form-step"><h4>Step 2: Creatives & Frequency</h4><div class="form-group"><label for="creative-type">Creative Type</label><select id="creative-type"><option>Display</option><option>Video</option><option>Audio</option></select></div><div class="form-group"><label>Campaign-Level Frequency Cap</label><div class="freq-cap-group"><input type="number" id="freq-cap-impressions" value="3"><span>impressions per</span><input type="number" id="freq-cap-duration" value="24"><select id="freq-cap-period"><option>Hours</option><option>Days</option><option>Weeks</option></select></div></div><div class="info-box"><p>Frequency caps work across multiple insertion orders.</p></div></div><div class="form-step"><h4>Step 3: Default Targeting</h4><div class="form-group"><label>Inventory Source</label><select id="inventory-source"><option>Public Inventory</option><option>Deals and Auction Packages</option></select></div><div class="form-group"><label>Geography</label><input type="text" placeholder="e.g., Mumbai, Maharashtra"></div><div class="form-group"><label>Brand Safety</label><select><option>Block all sensitive categories</option><option>Apply limited restrictions</option></select></div></div><div class="form-navigation"><button type="button" id="back-btn" class="secondary-btn hidden">Back</button><button type="button" id="next-btn" class="create-btn">Next</button><button type="submit" id="submit-btn" class="create-btn hidden">Create Campaign</button></div></form></div></div>
     <div id="io-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-io-form"><div class="modal-header"><h3>Create New Insertion Order</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Choose Insertion Order Type</h4><div class="io-type-selection"><div class="io-type-card"><h5>Real-time bidding</h5><p>Buy impressions via auctions.</p></div><div class="io-type-card"><h5>Story</h5><p>Tell a story across screens.</p></div></div></div><div class="form-step"><h4>Add New Line Item</h4><div class="form-group"><label for="line-item-name">Line Item Name</label><input type="text" id="line-item-name" required placeholder="e.g., Q4 Display Prospecting"></div><div class="form-group"><label for="line-item-type">Line Item Type</label><select id="line-item-type"><option>Display</option><option>Video</option><option>TrueView</option><option>Mobile app install</option></select></div></div><div class="form-navigation"><button type="button" id="io-back-btn" class="secondary-btn hidden">Back</button><button type="button" id="io-next-btn" class="create-btn">Next</button><button type="submit" id="io-submit-btn" class="create-btn hidden">Create</button></div></form></div></div>
-    <div id="li-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-li-form"><div class="modal-header"><h3>Create New Line Item</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Step 1: Type & Details</h4><div class="form-group"><label for="li-name">Line Item Name</label><input type="text" id="li-name" required placeholder="e.g., Diwali Video Prospecting"></div><div class="form-group"><label>Line Item Type</label><select id="li-type"><option>Display</option><option>Video</option><option>TrueView</option><option>Mobile app install</option></select></div></div><div class="form-step"><h4>Step 2: Bidding</h4><div class="form-group"><label for="bidding-strategy">Bidding Strategy</label><select id="bidding-strategy"><option>Automated Bidding</option><option>Fixed Bid</option><option>Target CPA</option></select></div><div class="info-box"><p><strong>Automated bidding in real time:</strong> Use an automated bid strategy to have Display & Video 360 dynamically change your bid based on the likelihood that an impression will lead to a click or conversion.</p></div></div><div class="form-navigation"><button type="button" id="li-back-btn" class="secondary-btn hidden">Back</button><button type="button" id="li-next-btn" class="create-btn">Next</button><button type="submit" id="li-submit-btn" class="create-btn hidden">Create</button></div></form></div></div>
+    <div id="li-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-li-form"><div class="modal-header"><h3>Create New Line Item</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Step 1: Type & Details</h4><div class="form-group"><label for="li-name">Line Item Name</label><input type="text" id="li-name" required placeholder="e.g., Diwali Video Prospecting"></div><div class="form-group"><label>Line Item Type</label><select id="li-type"><option>Display</option><option>Video</option><option>TrueView</option><option>Mobile app install</option></select></div></div><div class="form-step"><h4>Step 2: Bidding</h4><div class="form-group"><label for="bidding-strategy">Bidding Strategy</label><select id="bidding-strategy"><option>Automated Bidding</option><option>Fixed Bid</option><option>Target CPA</option></select></div><div class="info-box"><p><strong>Automated bidding:</strong> Use an automated bid strategy to have DV360 dynamically change your bid based on the likelihood of a conversion.</p></div></div><div class="form-navigation"><button type="button" id="li-back-btn" class="secondary-btn hidden">Back</button><button type="button" id="li-next-btn" class="create-btn">Next</button><button type="submit" id="li-submit-btn" class="create-btn hidden">Create</button></div></form></div></div>
     <div id="ad-canvas-modal-overlay" class="modal-overlay hidden"><div class="modal-content" style="max-width: 900px;"><div class="modal-header"><h3 id="ad-canvas-title">Ad Canvas Preview</h3><button type="button" class="close-btn">&times;</button></div><div class="ad-canvas-body"><div class="ad-canvas-preview-area"><img id="ad-canvas-image" src="" alt="Creative Preview"></div><div class="ad-canvas-controls"><h4>Device Preview</h4><div class="device-switcher"><button class="device-btn active-device" data-size="300x250">Desktop</button><button class="device-btn" data-size="320x480">Mobile</button><button class="device-btn" data-size="768x1024">Tablet</button></div></div></div></div></div>
     <div id="user-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-user-form"><div class="modal-header"><h3>Add New User</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><div class="form-group"><label for="user-email">User Email</label><input type="email" id="user-email" required placeholder="name@example.com"></div><div class="form-group"><label for="user-role">Assign Role</label><select id="user-role"><option>Creative Admin</option><option>Creative User</option><option>Media Planner</option><option>Brand Manager</option></select></div></div><div class="form-navigation"><button type="submit" class="create-btn">Save</button></div></form></div></div>
     <aside id="intelligence-panel" class="intelligence-panel"><div class="panel-header"><h3>Intelligence</h3><button id="close-intelligence-panel-btn" class="close-btn">&times;</button></div><div id="intelligence-panel-content" class="panel-content"></div></aside>
     <div id="troubleshoot-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><div class="modal-header"><h3>Troubleshoot: Underpacing</h3><button type="button" class="close-btn">&times;</button></div><div class="info-box"><p><strong>Issue:</strong> This insertion order is projected to spend less than its planned budget.</p><p><strong>Recommendation:</strong> Consider increasing the bid price or expanding the targeting to reach a wider audience.</p></div></div></div>
-
+    <div id="rfp-modal-overlay" class="modal-overlay hidden"><div class="modal-content" style="max-width: 800px;"><form id="rfp-form"><div class="modal-header"><h3>New request for proposal</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><div class="form-group"><label>RFP name</label><input type="text" value="Google Finance 2025 Deal" required></div><div class="form-group"><label>CC</label><input type="text" placeholder="Enter email addresses of anyone you want to include..."></div><div class="rfp-sellers-section"><h4>Sellers</h4><ul id="rfp-publisher-list" class="rfp-list"></ul></div></div><div class="form-navigation"><button type="submit" class="create-btn">Send RFP</button></div></form></div></div>
+    <div id="compare-modal-overlay" class="modal-overlay hidden"><div class="modal-content" style="max-width: 900px;"><div class="modal-header"><h3>Compare Publishers</h3><button type="button" class="close-btn">&times;</button></div><div id="compare-grid-container" class="compare-grid"></div></div></div>
 </body>
 </html>
