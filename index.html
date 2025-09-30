@@ -139,33 +139,45 @@
                         <div id="my-inventory-list-container"></div>
                     </div>
                     <div id="marketplace-content" class="tab-content">
-                        <div class="marketplace-layout">
-                            <div class="marketplace-main">
-                                <nav class="marketplace-tabs">
-                                    <span class="active">Publishers (100+)</span>
-                                    <span>Inventory Packages (85)</span>
-                                </nav>
-                                <div id="selection-action-bar" class="selection-action-bar hidden">
-                                    <span id="selection-count">3 rows selected</span>
-                                    <button id="request-proposal-btn" class="create-btn">Request Proposal</button>
-                                    <button id="compare-btn" class="secondary-btn">Compare</button>
-                                    <button class="secondary-btn">Download</button>
+                        <nav class="marketplace-tabs">
+                            <span data-tab="featured-view" class="marketplace-top-tab active">FEATURED</span>
+                            <span data-tab="display-video-view" class="marketplace-top-tab">DISPLAY & VIDEO</span>
+                            <span class="marketplace-top-tab">CONNECTED TV</span>
+                            <span class="marketplace-top-tab">AUDIO</span>
+                        </nav>
+                        
+                        <div id="featured-view" class="marketplace-top-tab-content active">
+                            <h4>Connected TV</h4>
+                            <div id="featured-publishers-container" class="format-gallery-grid"></div>
+                        </div>
+
+                        <div id="display-video-view" class="marketplace-top-tab-content">
+                            <div class="marketplace-layout">
+                                <div class="marketplace-main">
+                                    <nav class="marketplace-tabs sub">
+                                        <span data-tab="publishers-sub-view" class="marketplace-sub-tab active">Publishers (100+)</span>
+                                        <span data-tab="packages-sub-view" class="marketplace-sub-tab">Inventory Packages (85)</span>
+                                    </nav>
+                                    <div id="publishers-sub-view" class="marketplace-sub-tab-content active">
+                                        <div id="selection-action-bar" class="selection-action-bar hidden">
+                                            <span id="selection-count"></span>
+                                            <button id="request-proposal-btn" class="create-btn">Request Proposal</button>
+                                            <button id="compare-btn" class="secondary-btn">Compare</button>
+                                            <button class="secondary-btn">Download</button>
+                                        </div>
+                                        <div id="marketplace-table-container"></div>
+                                    </div>
+                                    <div id="packages-sub-view" class="marketplace-sub-tab-content">
+                                        <div id="inventory-packages-container"></div>
+                                    </div>
                                 </div>
-                                <div id="marketplace-table-container"></div>
+                                <aside class="marketplace-filters">
+                                    <h4>Filter Inventory</h4>
+                                    <div class="form-group"><p class="filter-label">Who will the ad be shown to?</p><p class="filter-sub-label">Age: 18-65+</p><div class="slider-placeholder"><div></div></div></div>
+                                    <div class="form-group"><p class="filter-label">User geo</p><div class="tag-group"><span class="tag">Canada <button>&times;</button></span><span class="tag">United States <button>&times;</button></span></div></div>
+                                    <button class="create-btn" style="width: 100%;">Apply</button>
+                                </aside>
                             </div>
-                            <aside class="marketplace-filters">
-                                <h4>Filter Inventory</h4>
-                                <div class="form-group">
-                                    <p class="filter-label">Who will the ad be shown to?</p>
-                                    <p class="filter-sub-label">Age: 18-65+</p>
-                                    <div class="slider-placeholder"><div></div></div>
-                                </div>
-                                <div class="form-group">
-                                    <p class="filter-label">User geo</p>
-                                    <div class="tag-group"><span class="tag">Canada <button>&times;</button></span><span class="tag">United States <button>&times;</button></span></div>
-                                </div>
-                                <button class="create-btn" style="width: 100%;">Apply</button>
-                            </aside>
                         </div>
                     </div>
                     <div id="negotiations-content" class="tab-content">
@@ -205,5 +217,10 @@
     <div id="troubleshoot-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><div class="modal-header"><h3>Troubleshoot: Underpacing</h3><button type="button" class="close-btn">&times;</button></div><div class="info-box"><p><strong>Issue:</strong> This insertion order is projected to spend less than its planned budget.</p><p><strong>Recommendation:</strong> Consider increasing the bid price or expanding the targeting to reach a wider audience.</p></div></div></div>
     <div id="rfp-modal-overlay" class="modal-overlay hidden"><div class="modal-content" style="max-width: 800px;"><form id="rfp-form"><div class="modal-header"><h3>New request for proposal</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><div class="form-group"><label>RFP name</label><input type="text" value="Google Finance 2025 Deal" required></div><div class="form-group"><label>CC</label><input type="text" placeholder="Enter email addresses of anyone you want to include..."></div><div class="rfp-sellers-section"><h4>Sellers</h4><ul id="rfp-publisher-list" class="rfp-list"></ul></div></div><div class="form-navigation"><button type="submit" class="create-btn">Send RFP</button></div></form></div></div>
     <div id="compare-modal-overlay" class="modal-overlay hidden"><div class="modal-content" style="max-width: 900px;"><div class="modal-header"><h3>Compare Publishers</h3><button type="button" class="close-btn">&times;</button></div><div id="compare-grid-container" class="compare-grid"></div></div></div>
+    <div id="package-details-modal" class="modal-overlay hidden"><div class="modal-content" style="max-width: 900px;"><div class="modal-header"><h3>Google Curated Package - US Hispanic</h3><button type="button" class="close-btn">&times;</button></div><div class="package-details-header"><img src="https://placehold.co/80x80/E6F4EA/137333?text=Package" alt="Package Icon" class="package-icon"><div><h2>Google Curated Package - US Hispanic</h2><p>Web, display, US. All web display inventory where Web Page Language is Spanish.</p><span class="inventory-package-tag">INVENTORY PACKAGE</span></div><div class="header-actions"><button id="assign-to-li-btn" class="create-btn">Assign to Line Item</button><button class="secondary-btn">New line item</button></div></div></div></div>
+    <div id="assign-deal-modal" class="modal-overlay hidden"><div class="modal-content" style="max-width: 800px;"><div class="modal-header"><h3>Assign deal to new line item</h3><button type="button" class="close-btn">&times;</button></div><div class="deal-info-header"><div><p>Deal name</p><h4>Google Curated Package - US Hispanic</h4></div><div><p>Deal ID</p><h4>549644393846519461</h4></div><div><p>Rate</p><h4>₹0.01 CPM</h4></div></div><div class="assign-deal-body"><div class="form-group"><label for="li-assign-name">Line item name</label><input type="text" id="li-assign-name" value="Corner Holiday 2025"></div><h4>Inventory source</h4><div class="info-box" style="margin-top: 10px;"><p><strong>Deals and Inventory Packages</strong></p><p>Google Curated Package - US Hispanic</p></div></div><div class="form-navigation"><button id="assign-deal-confirm-btn" class="create-btn">Assign</button><button class="secondary-btn">Cancel</button></div></div></div>
+    <div id="exchange-details-modal" class="modal-overlay hidden"><div class="modal-content" style="max-width: 900px;"><div class="modal-header"><h3>Google Ad Manager</h3><button type="button" class="close-btn">&times;</button></div><div class="exchange-details-header"><button id="new-instant-deal-btn" class="create-btn">New Instant Deal</button></div><div class="exchange-details-body"><img src="https://placehold.co/80x80/e8f0fe/1a73e8?text=GAM" alt="Exchange Logo"><div><h2>Google Ad Manager</h2><p>Google Ad Manager provides you access to Google Partner Inventory, inventory from millions of websites, apps and video, from across publishers using Google Ad Manager, AdMob and AdSense.</p></div></div></div></div>
+    <div id="instant-deal-modal" class="modal-overlay hidden"><div class="modal-content" style="max-width: 800px;"><form id="instant-deal-form"><div class="modal-header"><h3>New Instant Deal</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Deal Details</h4><div class="form-group"><label>Name</label><input type="text" value="Instant Deal - Sep 30, 2025" required></div><div class="form-group"><label>Advertiser Access</label><input type="text" placeholder="Provide access to advertisers"></div></div><div class="form-navigation"><button type="submit" class="create-btn">Request Forecast</button></div></form></div></div>
 </body>
 </html>
+
