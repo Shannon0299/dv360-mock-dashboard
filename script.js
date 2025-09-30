@@ -60,6 +60,18 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 3, name: "Connrix Native Video", impressions: "9.48B", cookies: "54.6M", display: "0%", video: "50%" },
         { id: 4, name: "LG Ads Solutions", impressions: "6.95B", cookies: "127M", display: "0%", video: "50%" }
     ];
+    const negotiationsData = [
+        { name: "Google Finance 2025 PG", seller: "Google Merchandise Store", status: "Active", startDate: "Jul 9, 2025" }
+    ];
+    const inventoryPackagesData = [
+        { name: "Google Curated Package - US Hispanic", id: "5496443...", exchange: "Google Ad Manager", impressions: "788M", uniques: "28.2M" },
+        { name: "GCP Holiday Season Shopping", id: "5496443...", exchange: "Google Ad Manager", impressions: "33.6B", uniques: "1.68B" },
+    ];
+    const featuredPublishersData = [
+        { name: "YouTube", logo: "https://placehold.co/48x48/FF0000/FFFFFF?text=YT", isInstant: false },
+        { name: "Google Ad Manager", logo: "https://placehold.co/48x48/e8f0fe/1a73e8?text=G", isInstant: true },
+        { name: "Hulu", logo: "https://placehold.co/48x48/1CE783/FFFFFF?text=h", isInstant: false },
+    ];
 
     // ===== DOM ELEMENT SELECTION =====
     const allViews = document.querySelectorAll('main > section');
@@ -75,6 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const formatGalleryContainer = document.getElementById('format-gallery-grid-container');
     const myInventoryListContainer = document.getElementById('my-inventory-list-container');
     const marketplaceTableContainer = document.getElementById('marketplace-table-container');
+    const negotiationsListContainer = document.getElementById('negotiations-list-container');
+    const inventoryPackagesContainer = document.getElementById('inventory-packages-container');
+    const featuredPublishersContainer = document.getElementById('featured-publishers-container');
 
     const campaignTabs = document.querySelectorAll('#campaign-view .sub-navigation li');
     const campaignTabContents = document.querySelectorAll('#campaign-view .tab-content');
@@ -84,6 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const creativeTabContents = document.querySelectorAll('#creatives-view .tab-content');
     const inventoryTabs = document.querySelectorAll('#inventory-view .sub-navigation li');
     const inventoryTabContents = document.querySelectorAll('#inventory-view .tab-content');
+    const marketplaceTopTabs = document.querySelectorAll('.marketplace-top-tab');
+    const marketplaceTopTabContents = document.querySelectorAll('.marketplace-top-tab-content');
+    const marketplaceSubTabs = document.querySelectorAll('.marketplace-tabs.sub .marketplace-sub-tab');
+    const marketplaceSubTabContents = document.querySelectorAll('.marketplace-sub-tab-content');
     
     const createCampaignBtn = document.getElementById('create-campaign-btn');
     const campaignModal = document.getElementById('campaign-modal-overlay');
@@ -101,6 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const compareBtn = document.getElementById('compare-btn');
     const rfpModal = document.getElementById('rfp-modal-overlay');
     const compareModal = document.getElementById('compare-modal-overlay');
+    const packageDetailsModal = document.getElementById('package-details-modal');
+    const assignToLiBtn = document.getElementById('assign-to-li-btn');
+    const assignDealModal = document.getElementById('assign-deal-modal');
+    const exchangeDetailsModal = document.getElementById('exchange-details-modal');
+    const newInstantDealBtn = document.getElementById('new-instant-deal-btn');
+    const instantDealModal = document.getElementById('instant-deal-modal');
 
     const runReportBtn = document.getElementById('run-report-btn');
     const vizTypeSelect = document.getElementById('visualization-type');
@@ -129,6 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderMyInventoryTable = (data) => { if (!myInventoryListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Deal Name</th><th>Type</th><th>Status</th></tr></thead><tbody>`; data.forEach(deal => { html += `<tr><td>${deal.name}</td><td>${deal.type}</td><td><span class="status status-${deal.status.toLowerCase()}">${deal.status}</span></td></tr>`; }); html += `</tbody></table></div>`; myInventoryListContainer.innerHTML = html; };
     const renderMarketplaceTable = (data) => { if (!marketplaceTableContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th><input type="checkbox" id="select-all-publishers"></th><th>Publisher</th><th>Impressions</th><th>Cookies</th><th>Display</th><th>Video</th></tr></thead><tbody>`; data.forEach(p => { html += `<tr data-id="${p.id}"><td><input type="checkbox" class="publisher-checkbox"></td><td><strong>${p.name}</strong></td><td>${p.impressions}</td><td>${p.cookies}</td><td>${p.display}</td><td>${p.video}</td></tr>`; }); html += `</tbody></table></div>`; marketplaceTableContainer.innerHTML = html; };
     const renderCompareModal = (selectedPublishers) => { const grid = document.getElementById('compare-grid-container'); if (!grid) return; let html = ''; selectedPublishers.forEach(p => { const fullData = marketplacePublisherData.find(pub => pub.id === p); html += `<div class="compare-card"><h4>${fullData.name}</h4><p><strong>Impressions:</strong> ${fullData.impressions}</p><p><strong>Cookies:</strong> ${fullData.cookies}</p><p><strong>Display / Video:</strong> ${fullData.display} / ${fullData.video}</p></div>`; }); grid.innerHTML = html;};
+    const renderNegotiationsTable = (data) => { if (!negotiationsListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Name</th><th>Seller</th><th>Status</th><th>Start Date</th></tr></thead><tbody>`; data.forEach(n => { html += `<tr><td>${n.name}</td><td>${n.seller}</td><td><span class="status status-${n.status.toLowerCase()}">${n.status}</span></td><td>${n.startDate}</td></tr>`; }); html += `</tbody></table></div>`; negotiationsListContainer.innerHTML = html; };
+    const renderInventoryPackages = (data) => { if (!inventoryPackagesContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Auction Package</th><th>ID</th><th>Exchange</th><th>Impressions</th><th>Uniques</th></tr></thead><tbody>`; data.forEach(p => { html += `<tr class="package-row"><td><a href="#" class="package-link">${p.name}</a></td><td>${p.id}</td><td>${p.exchange}</td><td>${p.impressions}</td><td>${p.uniques}</td></tr>`; }); html += `</tbody></table></div>`; inventoryPackagesContainer.innerHTML = html; };
+    const renderFeaturedPublishers = (data) => { if (!featuredPublishersContainer) return; let html = ''; data.forEach(p => { html += `<div class="featured-card" data-instant="${p.isInstant}">${p.isInstant ? '<div class="instant-deal-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 21L14.4 12.5L10.5 10.5L12 3L4.4 12.5L8.5 14.5L7 21Z"/></svg></div>' : ''}<img src="${p.logo}" alt="${p.name} logo"><p>${p.name}</p></div>`; }); featuredPublishersContainer.innerHTML = html; };
     
     const updateKpiOptions = () => { if (!campaignGoalSelect || !campaignKpiSelect) return; const selectedGoal = campaignGoalSelect.value; const kpiOptions = kpiOptionsByGoal[selectedGoal] || []; campaignKpiSelect.innerHTML = kpiOptions.map(kpi => `<option>${kpi}</option>`).join(''); };
 
@@ -142,6 +170,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTabs(creativeTabs, creativeTabContents);
     setupTabs(inventoryTabs, inventoryTabContents);
 
+    const setupSubTabs = (tabs, contents) => { if (tabs && contents.length) { tabs.forEach(tab => { tab.addEventListener('click', (e) => { const id = e.target.dataset.tab; tabs.forEach(t => t.classList.remove('active')); e.target.classList.add('active'); contents.forEach(c => c.classList.toggle('active', c.id === id)); }); }); }};
+    setupSubTabs(marketplaceTopTabs, marketplaceTopTabContents);
+    setupSubTabs(marketplaceSubTabs, marketplaceSubTabContents);
+
     const setupModal = (btn, modal, onsubmit) => { if (!btn || !modal) return; const form = modal.querySelector('form'); const steps = modal.querySelectorAll('.form-step'); const nextBtn = modal.querySelector('[id*="-next-btn"]') || modal.querySelector('.create-btn'); const backBtn = modal.querySelector('[id*="-back-btn"]'); const submitBtn = modal.querySelector('[id*="-submit-btn"]') || (form ? form.querySelector('[type="submit"]') : null); let currentStep = 0; const openModal = () => { currentStep = 0; showStep(0); if (form) form.reset(); modal.classList.remove('hidden'); }; const closeModal = () => modal.classList.add('hidden'); const showStep = (i) => { if (steps && steps.length > 0) { steps.forEach((s, ix) => s.classList.toggle('active-step', ix === i)); } if (backBtn) backBtn.classList.toggle('hidden', i === 0); if (nextBtn && steps.length > 0) nextBtn.classList.toggle('hidden', i === steps.length - 1); if (submitBtn && steps.length > 0) submitBtn.classList.toggle('hidden', i !== steps.length - 1); }; btn.addEventListener('click', openModal); modal.querySelector('.close-btn').addEventListener('click', closeModal); if (nextBtn) nextBtn.addEventListener('click', () => { if (steps && currentStep < steps.length - 1) { currentStep++; showStep(currentStep); } }); if (backBtn) backBtn.addEventListener('click', () => { if (currentStep > 0) { currentStep--; showStep(currentStep); } }); if (form) form.addEventListener('submit', (e) => { e.preventDefault(); onsubmit(closeModal); }); };
     
     setupModal(createCampaignBtn, campaignModal, (close) => { const nc = { name: campaignModal.querySelector('#campaign-name').value, budget: parseFloat(campaignModal.querySelector('#planned-spend').value) || 0, spent: 0, kpiGoal: 1, kpiActual: 0 }; campaignListData.push(nc); renderCampaignList(campaignListData); close(); });
@@ -150,6 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupModal(newUserBtn, userModal, (close) => { alert('New user added!'); close(); });
     setupModal(requestProposalBtn, rfpModal, (close) => { alert('RFP Sent!'); close(); });
     setupModal(compareBtn, compareModal, () => {});
+    setupModal(assignToLiBtn, assignDealModal, (close) => { alert('Deal Assigned to New Line Item!'); close(); if(packageDetailsModal) packageDetailsModal.classList.add('hidden'); });
+    setupModal(newInstantDealBtn, instantDealModal, (close) => { alert('Forecast Requested! Your deal is now in Negotiations.'); close(); if(exchangeDetailsModal) exchangeDetailsModal.classList.add('hidden'); });
 
     if (adCanvasModal) { const openAdCanvas = (creativeId) => { const creative = creativeListData.find(c => c.id === creativeId); if (!creative) return; adCanvasModal.querySelector('#ad-canvas-title').textContent = `Ad Canvas: ${creative.name}`; adCanvasModal.querySelector('#ad-canvas-image').src = creative.imageUrl; const defaultDevice = adCanvasModal.querySelector('[data-size="300x250"]'); if (defaultDevice) defaultDevice.click(); adCanvasModal.classList.remove('hidden'); }; adCanvasModal.querySelector('.close-btn').addEventListener('click', () => adCanvasModal.classList.add('hidden')); if (creativeListContainer) { creativeListContainer.addEventListener('click', (e) => { if (e.target.classList.contains('preview-btn')) { openAdCanvas(parseInt(e.target.dataset.creativeId, 10)); } }); } if (formatGalleryContainer) { formatGalleryContainer.addEventListener('click', (e) => { if (e.target.classList.contains('format-create-btn')) { openAdCanvas(parseInt(e.target.dataset.creativeId, 10)); } }); } const adCanvasPreviewArea = adCanvasModal.querySelector('.ad-canvas-preview-area'); const deviceSwitcher = adCanvasModal.querySelector('.device-switcher'); if (deviceSwitcher) { deviceSwitcher.addEventListener('click', (e) => { if (e.target.classList.contains('device-btn')) { const [w, h] = e.target.dataset.size.split('x'); adCanvasPreviewArea.style.aspectRatio = `${w} / ${h}`; deviceSwitcher.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active-device')); e.target.classList.add('active-device'); } }); }}
     
@@ -159,8 +193,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (troubleshootModal) { troubleshootModal.querySelector('.close-btn').addEventListener('click', () => troubleshootModal.classList.add('hidden')); }
     if (campaignGoalSelect) { campaignGoalSelect.addEventListener('change', updateKpiOptions); }
     if (marketplaceTableContainer) { const updateSelectionBar = () => { const selectedCheckboxes = marketplaceTableContainer.querySelectorAll('.publisher-checkbox:checked'); const count = selectedCheckboxes.length; const actionBar = document.getElementById('selection-action-bar'); if(actionBar) { if (count > 0) { actionBar.classList.remove('hidden'); actionBar.querySelector('#selection-count').textContent = `${count} row${count > 1 ? 's' : ''} selected`; requestProposalBtn.disabled = false; compareBtn.disabled = count > 3 || count < 2; } else { actionBar.classList.add('hidden'); } } }; marketplaceTableContainer.addEventListener('change', (e) => { const target = e.target; if (target.id === 'select-all-publishers') { marketplaceTableContainer.querySelectorAll('.publisher-checkbox').forEach(cb => { cb.checked = target.checked; cb.closest('tr').classList.toggle('selected-row', target.checked); }); } else if (target.classList.contains('publisher-checkbox')) { target.closest('tr').classList.toggle('selected-row', target.checked); } updateSelectionBar(); }); }
-    if(rfpModal) { requestProposalBtn.addEventListener('click', () => { const selectedCards = marketplaceTableContainer.querySelectorAll('.selected-row'); const publisherList = rfpModal.querySelector('#rfp-publisher-list'); if(publisherList) { publisherList.innerHTML = ''; selectedCards.forEach(card => { const li = document.createElement('li'); li.textContent = marketplacePublisherData.find(p => p.id === parseInt(card.dataset.id)).name; publisherList.appendChild(li); }); } }); }
+    if(rfpModal) { requestProposalBtn.addEventListener('click', () => { const selectedCards = marketplaceTableContainer.querySelectorAll('.selected-row'); const publisherList = rfpModal.querySelector('#rfp-publisher-list'); if(publisherList) { publisherList.innerHTML = ''; selectedCards.forEach(card => { const publisherName = marketplacePublisherData.find(p => p.id === parseInt(card.dataset.id)).name; const li = document.createElement('li'); li.innerHTML = `<span>${publisherName}</span><button type="button" class="close-btn" style="font-size: 1.2rem;">&times;</button>`; publisherList.appendChild(li); }); } }); }
     if(compareModal) { compareBtn.addEventListener('click', () => { const selectedIds = Array.from(marketplaceTableContainer.querySelectorAll('.selected-row')).map(row => parseInt(row.dataset.id)); renderCompareModal(selectedIds); }); }
+    if(packageDetailsModal) { const container = document.getElementById('inventory-packages-container'); if(container){ container.addEventListener('click', (e) => { if (e.target.classList.contains('package-link')) { e.preventDefault(); packageDetailsModal.classList.remove('hidden'); } }); } packageDetailsModal.querySelector('.close-btn').addEventListener('click', () => packageDetailsModal.classList.add('hidden')); }
+    if (featuredPublishersContainer) { featuredPublishersContainer.addEventListener('click', (e) => { const card = e.target.closest('.featured-card'); if (card && card.dataset.instant === 'true') { if (exchangeDetailsModal) exchangeDetailsModal.classList.remove('hidden'); } }); }
+    if (exchangeDetailsModal) { exchangeDetailsModal.querySelector('.close-btn').addEventListener('click', () => exchangeDetailsModal.classList.add('hidden'));}
 
     // ===== INITIALIZATION =====
     showView('campaign-view');
@@ -176,4 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateKpiOptions();
     renderMyInventoryTable(myInventoryData);
     renderMarketplaceTable(marketplacePublisherData);
+    renderNegotiationsTable(negotiationsData);
+    renderInventoryPackages(inventoryPackagesData);
+    renderFeaturedPublishers(featuredPublishersData);
 });
