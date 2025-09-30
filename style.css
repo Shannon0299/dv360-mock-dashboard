@@ -105,7 +105,7 @@ main {
 }
 
 .create-btn {
-    background-color: #4F9F5A;
+    background-color: #673AB7;
     color: var(--white);
     border: none;
     padding: 10px 16px;
@@ -117,7 +117,7 @@ main {
 }
 
 .create-btn:hover {
-    background-color: #459650;
+    background-color: #512DA8;
 }
 
 .create-btn:disabled {
@@ -646,6 +646,9 @@ th {
     grid-template-columns: 1fr 300px;
     gap: 24px;
 }
+.marketplace-layout.full-width {
+    grid-template-columns: 1fr;
+}
 .marketplace-main {
     display: flex;
     flex-direction: column;
@@ -654,20 +657,33 @@ th {
     display: flex;
     align-items: center;
     gap: 24px;
-    padding-bottom: 12px;
     border-bottom: 1px solid var(--border-grey);
     margin-bottom: 20px;
+}
+.marketplace-tabs.sub {
+    border: none;
+    margin-bottom: 16px;
+    background-color: var(--white);
+    padding: 0 16px;
+    border-radius: 8px 8px 0 0;
+    box-shadow: var(--shadow);
 }
 .marketplace-tabs span {
     font-weight: 500;
     color: var(--text-light);
     font-size: 0.9rem;
     cursor: pointer;
-    padding-bottom: 12px;
+    padding: 12px 0;
 }
 .marketplace-tabs span.active {
     color: var(--primary-blue);
     border-bottom: 2px solid var(--primary-blue);
+}
+.marketplace-top-tab-content, .marketplace-sub-tab-content {
+    display: none;
+}
+.marketplace-top-tab-content.active, .marketplace-sub-tab-content.active {
+    display: block;
 }
 .selection-action-bar {
     display: flex;
@@ -781,7 +797,121 @@ th {
 .rfp-list li span {
     font-weight: 500;
 }
-
+.package-icon {
+    border-radius: 4px;
+}
+.package-details-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-grey);
+}
+.package-details-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+.package-details-header p {
+    color: var(--text-light);
+}
+.inventory-package-tag {
+    background-color: var(--status-paused-bg);
+    color: var(--status-paused-text);
+    font-weight: 500;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 8px;
+}
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+.deal-info-header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    background-color: #4A5568;
+    color: white;
+    padding: 20px;
+    border-radius: 8px 8px 0 0;
+    margin: -24px -24px 24px -24px;
+}
+.deal-info-header p {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-bottom: 4px;
+}
+.assign-deal-body {
+    margin-top: 40px;
+}
+.marketplace-sub-tab-content {
+    display: none;
+}
+.marketplace-sub-tab-content.active {
+    display: block;
+}
+.featured-card {
+    background: var(--white);
+    border: 1px solid var(--border-grey);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+    position: relative;
+    min-height: 140px;
+}
+.featured-card:hover {
+    box-shadow: var(--shadow);
+}
+.featured-card img {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+.featured-card p {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.instant-deal-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #F9AB00;
+}
+.exchange-details-header {
+    padding: 16px 0;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-grey);
+}
+.exchange-details-body {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: start;
+}
+.exchange-details-body img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+}
+.exchange-details-body h2 {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+.exchange-details-body p {
+    color: var(--text-light);
+    line-height: 1.6;
+}
 
 /* Utility Classes */
 .hidden {
