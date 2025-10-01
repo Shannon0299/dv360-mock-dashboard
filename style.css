@@ -109,7 +109,7 @@ main {
 }
 
 .create-btn {
-    background-color: #673AB7;
+    background-color: #4F9F5A;
     color: var(--white);
     border: none;
     padding: 10px 16px;
@@ -121,7 +121,7 @@ main {
 }
 
 .create-btn:hover {
-    background-color: #512DA8;
+    background-color: #3a7943;
 }
 
 .create-btn:disabled {
@@ -1055,4 +1055,71 @@ th {
     align-items: center;
     gap: 10px;
     font-size: 0.9rem;
+}
+/* ===== NEW: Main Header Redesign ===== */
+
+/* Main Header Layout */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px; /* Adjusted padding */
+}
+
+/* Breadcrumb Styles (Left Side) */
+.header-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-dark);
+    font-weight: 400;
+}
+.header-breadcrumb svg {
+    color: var(--text-light);
+}
+.header-breadcrumb span {
+    color: var(--text-light);
+}
+.header-breadcrumb p {
+    margin: 0;
+}
+
+/* Toolbar Styles (Right Side) */
+.header-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    color: var(--text-light);
+}
+
+.header-icon-btn:hover {
+    background-color: var(--background-grey);
+}
+
+.header-user-profile {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #673AB7; /* Example color */
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-left: 12px;
 }
