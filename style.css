@@ -45,14 +45,18 @@ body {
 }
 
 .sidebar-header {
-    padding: 24px;
-    font-size: 1.2rem;
-    border-bottom: 1px solid var(--border-grey);
     display: flex;
     align-items: center;
-    gap: 12px;
+    padding: 15px 20px;
+    background-color: var(--white); /* CORRECTED to use the --white variable */
+    border-bottom: 1px solid var(--border-grey);
 }
 
+.dv360-logo {
+    height: 40px; /* Adjust height as needed */
+    width: auto;
+    /* max-width: 150px; If you want to limit width */
+}
 .sidebar-header h2 {
     font-weight: 500;
 }
@@ -916,4 +920,139 @@ th {
 /* Utility Classes */
 .hidden {
     display: none;
+}
+/* ===== NEW: Audience Builder Specific Styles ===== */
+.audience-builder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.audience-builder-card {
+    border: 1px solid var(--border-grey);
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.audience-builder-card:hover {
+    border-color: var(--primary-blue);
+    box-shadow: var(--shadow);
+}
+
+.audience-builder-card.disabled {
+    cursor: not-allowed;
+    background-color: var(--background-grey);
+    opacity: 0.6;
+}
+
+.audience-builder-card img {
+    margin-bottom: 12px;
+}
+
+.audience-builder-card h4 {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.audience-builder-card p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.activity-builder-layout {
+    display: grid;
+    grid-template-columns: 1fr 250px;
+    gap: 24px;
+    margin-top: 16px;
+}
+
+.activity-builder-main h4, .activity-builder-sidebar h4 {
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.rule-builder-group {
+    background: var(--background-grey);
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.rule-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--white);
+    padding: 8px;
+    border: 1px solid var(--border-grey);
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.rule-input select {
+    border: none;
+    background: none;
+    flex-grow: 1;
+}
+
+.rule-input input {
+    width: 60px;
+    border: none;
+    text-align: right;
+}
+
+.activity-builder-sidebar {
+    background: var(--background-grey);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.estimate-number {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 24px;
+    color: var(--primary-blue);
+}
+/* ===== NEW: Combined Audience Builder Styles ===== */
+.audience-logic-section h4 {
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+.audience-logic-box {
+    border: 1px solid var(--border-grey);
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 100px;
+}
+.included-audience-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--background-grey);
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+.included-audience-card button {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+.audience-picker-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--border-grey);
+    border-radius: 4px;
+    padding: 10px;
+}
+.audience-picker-item {
+    display: block;
+    margin-bottom: 10px;
+}
+.audience-picker-item label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
 }
