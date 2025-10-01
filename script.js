@@ -72,8 +72,137 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "Google Ad Manager", logo: "https://placehold.co/48x48/e8f0fe/1a73e8?text=G", isInstant: true },
         { name: "Hulu", logo: "https://placehold.co/48x48/1CE783/FFFFFF?text=h", isInstant: false },
     ];
+    // ===== NEW FUNCTION =====
+const setupAudienceBuilder = () => {
+    if (!newAudienceBtn || !audienceBuilderModal || !activityAudienceModal) return;
 
+    // Open the main Audience Builder Homepage
+    newAudienceBtn.addEventListener('click', () => {
+        audienceBuilderModal.classList.remove('hidden');
+    });
+
+    // Close button for builder homepage
+    audienceBuilderModal.querySelector('.close-btn').addEventListener('click', () => {
+        audienceBuilderModal.classList.add('hidden');
+    });
+
+    // Handle click on the "Activity-based" card
+    const createActivityBtn = audienceBuilderModal.querySelector('#create-activity-based-btn');
+    if (createActivityBtn) {
+        createActivityBtn.addEventListener('click', () => {
+            audienceBuilderModal.classList.add('hidden'); // Close first modal
+            activityAudienceModal.classList.remove('hidden'); // Open second modal
+        });
+    }
+
+    // Handle the final form submission
+    const activityForm = activityAudienceModal.querySelector('#create-activity-audience-form');
+    if (activityForm) {
+        activityAudienceModal.querySelector('.close-btn').addEventListener('click', () => {
+            activityAudienceModal.classList.add('hidden');
+        });
+
+        activityForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newAudienceName = activityForm.querySelector('#activity-audience-name').value;
+
+            // Create the new audience object
+            const newAudience = {
+                name: newAudienceName,
+                type: "Activity-based",
+                source: "Display & Video 360",
+                size: { display: 800, youtube: 0, mobile: 500 } // Mock data for size < 1K
+            };
+
+            // Add to our data array and re-render the table
+            audienceListData.push(newAudience);
+            renderAudienceTable(audienceListData);
+
+            // Close the modal and reset the form
+            activityAudienceModal.classList.add('hidden');
+            activityForm.reset();
+
+            // Show a confirmation
+            alert(`New audience "${newAudienceName}" has been created!`);
+        });
+    }
+};
+// ===== NEW FUNCTION =====
+const setupCombinedAudienceBuilder = () => {
+    if (!audienceBuilderModal || !combinedAudienceModal || !audiencePickerModal) return;
+
+    const createCombinedBtn = audienceBuilderModal.querySelector('#create-combined-btn');
+    let selectedForCombination = []; // Temp array to hold selections
+
+    // 1. Open the main combined builder from the homepage
+    createCombinedBtn.addEventListener('click', () => {
+        audienceBuilderModal.classList.add('hidden');
+        combinedAudienceModal.classList.remove('hidden');
+    });
+
+    // 2. Open the audience picker
+    const addAudienceBtn = combinedAudienceModal.querySelector('#add-include-audience-btn');
+    addAudienceBtn.addEventListener('click', () => {
+        const pickerList = audiencePickerModal.querySelector('#picker-audience-list');
+        pickerList.innerHTML = audienceListData.map(audience => `
+            <span class="audience-picker-item">
+                <label>
+                    <input type="checkbox" value="${audience.name}">
+                    ${audience.name}
+                </label>
+            </span>
+        `).join('');
+        audiencePickerModal.classList.remove('hidden');
+    });
+
+    // 3. Apply selections from the picker
+    const applyBtn = audiencePickerModal.querySelector('#apply-audience-selection-btn');
+    applyBtn.addEventListener('click', () => {
+        const checkedBoxes = audiencePickerModal.querySelectorAll('input[type="checkbox"]:checked');
+        selectedForCombination = Array.from(checkedBoxes).map(cb => cb.value);
+
+        const includedContainer = combinedAudienceModal.querySelector('#included-audiences-container');
+        includedContainer.innerHTML = selectedForCombination.map(name => `
+            <div class="included-audience-card">
+                <span>${name}</span>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+        `).join('');
+
+        audiencePickerModal.classList.add('hidden');
+    });
+
+    // 4. Save the final combined audience
+    const combinedForm = combinedAudienceModal.querySelector('#create-combined-form');
+    combinedForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newName = combinedForm.querySelector('#combined-audience-name').value;
+
+        const newAudience = {
+            name: newName,
+            type: 'Combined',
+            source: 'Advertiser'
+        };
+
+        combinedAudienceData.push(newAudience);
+        renderCombinedAudienceTable(combinedAudienceData);
+
+        combinedAudienceModal.classList.add('hidden');
+        combinedForm.reset();
+        combinedAudienceModal.querySelector('#included-audiences-container').innerHTML = '';
+        alert(`New combined audience "${newName}" was saved!`);
+    });
+
+    // Close buttons for the modals
+    combinedAudienceModal.querySelector('.close-btn').addEventListener('click', () => combinedAudienceModal.classList.add('hidden'));
+    audiencePickerModal.querySelector('.close-btn').addEventListener('click', () => audiencePickerModal.classList.add('hidden'));
+};
     // ===== DOM ELEMENT SELECTION =====
+    const combinedAudienceListContainer = document.getElementById('combined-audience-list-container');
+    const combinedAudienceModal = document.getElementById('combined-audience-modal');
+    const audiencePickerModal = document.getElementById('audience-picker-modal');
+const newAudienceBtn = document.getElementById('new-audience-btn');    const audienceBuilderModal = document.getElementById('audience-builder-homepage-modal');
+    const activityAudienceModal = document.getElementById('activity-audience-modal');
     const allViews = document.querySelectorAll('main > section');
     const sidebarNav = document.querySelector('.sidebar-nav');
     const navLinks = document.querySelectorAll('.sidebar-nav li');
@@ -159,7 +288,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderFeaturedPublishers = (data) => { if (!featuredPublishersContainer) return; let html = ''; data.forEach(p => { html += `<div class="featured-card" data-instant="${p.isInstant}">${p.isInstant ? '<div class="instant-deal-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 21L14.4 12.5L10.5 10.5L12 3L4.4 12.5L8.5 14.5L7 21Z"/></svg></div>' : ''}<img src="${p.logo}" alt="${p.name} logo"><p>${p.name}</p></div>`; }); featuredPublishersContainer.innerHTML = html; };
     
     const updateKpiOptions = () => { if (!campaignGoalSelect || !campaignKpiSelect) return; const selectedGoal = campaignGoalSelect.value; const kpiOptions = kpiOptionsByGoal[selectedGoal] || []; campaignKpiSelect.innerHTML = kpiOptions.map(kpi => `<option>${kpi}</option>`).join(''); };
-
+// With your other RENDER FUNCTIONS
+const renderCombinedAudienceTable = (data) => { 
+    if (!combinedAudienceListContainer) return; 
+    let html = `<div id="campaign-table-container"><table><thead><tr><th>Name</th><th>Type</th><th>Source</th></tr></thead><tbody>`; 
+    if (data.length === 0) {
+        html += `<tr><td colspan="3" style="text-align:center; color: var(--text-light);">No combined audiences created yet.</td></tr>`;
+    } else {
+        data.forEach(c => { 
+            html += `<tr><td>${c.name}</td><td><span class="status status-in-review">${c.type}</span></td><td>${c.source}</td></tr>`; 
+        }); 
+    }
+    html += `</tbody></table></div>`; 
+    combinedAudienceListContainer.innerHTML = html; 
+};
     // ===== EVENT LISTENERS =====
     const showView = (viewId) => { allViews.forEach(v => v.classList.add('hidden')); const vts = document.getElementById(viewId); if (vts) vts.classList.remove('hidden'); };
     if (sidebarNav) { sidebarNav.addEventListener('click', (event) => { event.preventDefault(); const link = event.target.closest('a'); if (!link) return; navLinks.forEach(l => l.classList.remove('active')); link.parentElement.classList.add('active'); const text = link.textContent.toLowerCase(); let viewId = 'campaign-view'; if (text.includes('audiences')) viewId = 'audiences-view'; else if (text.includes('creatives')) viewId = 'creatives-view'; else if (text.includes('inventory')) viewId = 'inventory-view'; else if (text.includes('reporting')) viewId = 'reporting-view'; showView(viewId); }); }
@@ -216,4 +358,8 @@ document.addEventListener('DOMContentLoaded', () => {
     renderNegotiationsTable(negotiationsData);
     renderInventoryPackages(inventoryPackagesData);
     renderFeaturedPublishers(featuredPublishersData);
+setupAudienceBuilder();
+// At the very bottom, inside the DOMContentLoaded event listener
+setupCombinedAudienceBuilder();
+renderCombinedAudienceTable(combinedAudienceData);
 });
