@@ -11,11 +11,9 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- ===== SIDE NAVIGATION BAR ===== -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h2>DV360 Mock</h2>
-            </div>
+<img src="https://097cb0ca.delivery.rocketcdn.me/wp-content/uploads/DV-360-Logo-e1744105620751.png" alt="DV360 Logo" class="dv360-logo">            </div>
             <nav class="sidebar-nav">
                 <ul>
                     <li class="active"><a href="#">Campaigns</a></li>
@@ -27,14 +25,12 @@
             </nav>
         </aside>
 
-        <!-- ===== MAIN CONTENT AREA ===== -->
         <div class="main-content">
             <header class="main-header">
                 <h1>Advertiser: Global Tech Inc.</h1>
             </header>
 
             <main>
-                <!-- Campaigns Module View -->
                 <section id="campaign-view">
                     <div class="view-header">
                         <h2>Campaigns</h2>
@@ -89,25 +85,29 @@
                     </div>
                 </section>
 
-                <!-- Audiences Module View -->
                 <section id="audiences-view" class="hidden">
                     <div class="view-header"><h2>Audiences</h2></div>
                     <nav class="sub-navigation">
                         <ul>
-                            <li class="active-tab" data-tab="all-audiences">All audiences</li>
-                            <li data-tab="custom-lists">Custom lists</li>
-                            <li data-tab="analysis">Analysis</li>
+                            <li class="active-tab" data-tab="general">GENERAL</li>
+                            <li data-tab="custom-lists">CUSTOM LISTS</li>
+                            <li data-tab="combined">COMBINED</li>
                         </ul>
                     </nav>
-                    <div id="all-audiences-content" class="tab-content active-tab-content">
-                        <div class="campaign-list-header"><button class="create-btn">+ New Audience</button></div>
+                    <div id="general-content" class="tab-content active-tab-content">
+                        <div class="campaign-list-header"><button id="new-audience-btn" class="create-btn">+ New Audience</button></div>
                         <div id="audience-list-container"></div>
                     </div>
-                    <div id="custom-lists-content" class="tab-content"><h3>Custom Lists</h3><p>This is where you would create and manage custom affinity and custom intent audiences.</p></div>
-                    <div id="analysis-content" class="tab-content"><h3>Audience Analysis</h3><p>This is where you would perform a rich analysis of your audience composition.</p></div>
+                    <div id="custom-lists-content" class="tab-content">
+                        <h3>Custom Lists</h3>
+                        <p>This is where you would create and manage custom affinity and custom intent audiences.</p>
+                    </div>
+                    <div id="combined-content" class="tab-content">
+                        <div class="campaign-list-header"><h3>All Combined Audiences</h3></div>
+                        <div id="combined-audience-list-container"></div>
+                    </div>
                 </section>
                 
-                <!-- Creatives Module View -->
                 <section id="creatives-view" class="hidden">
                     <div class="view-header"><h2>Creatives</h2></div>
                     <nav class="sub-navigation">
@@ -124,7 +124,6 @@
                     <div id="team-content" class="tab-content"><div class="campaign-list-header"><button id="new-user-btn" class="create-btn">+ New User</button><h3>Creative Team Members</h3></div><div id="team-list-container"></div></div>
                 </section>
                 
-                <!-- Inventory Module View -->
                 <section id="inventory-view" class="hidden">
                     <div class="view-header"><h2>Inventory</h2></div>
                     <nav class="sub-navigation">
@@ -187,7 +186,6 @@
                     </div>
                 </section>
                 
-                <!-- Reporting Module View -->
                 <section id="reporting-view" class="hidden">
                     <div class="view-header"><h2>Reporting</h2></div>
                     <div class="report-controls">
@@ -207,7 +205,6 @@
         </div>
     </div>
 
-    <!-- ===== ALL MODALS ===== -->
     <div id="campaign-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-campaign-form"><div class="modal-header"><h3>Create New Campaign</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Step 1: Goal & Settings</h4><div class="form-group"><label for="campaign-name">Campaign Name</label><input type="text" id="campaign-name" required placeholder="e.g., Q4 Diwali Sale"></div><div class="form-group"><label for="campaign-goal">Goal</label><select id="campaign-goal"><option value="awareness">Raise awareness</option><option value="action">Drive online action</option><option value="installs">Drive app installs</option></select></div><div class="form-group"><label for="campaign-kpi">Key Performance Indicator (KPI)</label><select id="campaign-kpi"></select></div><div class="form-group"><label for="planned-spend">Planned Spend (Optional)</label><input type="number" id="planned-spend" placeholder="e.g., 500000"></div><div class="form-group"><label for="start-date">Planned Dates</label><div class="date-group"><input type="date" id="start-date" required><input type="date" id="end-date" required></div></div></div><div class="form-step"><h4>Step 2: Creatives & Frequency</h4><div class="form-group"><label for="creative-type">Creative Type</label><select id="creative-type"><option>Display</option><option>Video</option><option>Audio</option></select></div><div class="form-group"><label>Campaign-Level Frequency Cap</label><div class="freq-cap-group"><input type="number" id="freq-cap-impressions" value="3"><span>impressions per</span><input type="number" id="freq-cap-duration" value="24"><select id="freq-cap-period"><option>Hours</option><option>Days</option><option>Weeks</option></select></div></div><div class="info-box"><p>Frequency caps work across multiple insertion orders.</p></div></div><div class="form-step"><h4>Step 3: Default Targeting</h4><div class="form-group"><label>Inventory Source</label><select id="inventory-source"><option>Public Inventory</option><option>Deals and Auction Packages</option></select></div><div class="form-group"><label>Geography</label><input type="text" placeholder="e.g., Mumbai, Maharashtra"></div><div class="form-group"><label>Brand Safety</label><select><option>Block all sensitive categories</option><option>Apply limited restrictions</option></select></div></div><div class="form-navigation"><button type="button" id="back-btn" class="secondary-btn hidden">Back</button><button type="button" id="next-btn" class="create-btn">Next</button><button type="submit" id="submit-btn" class="create-btn hidden">Create Campaign</button></div></form></div></div>
     <div id="io-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-io-form"><div class="modal-header"><h3>Create New Insertion Order</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Choose Insertion Order Type</h4><div class="io-type-selection"><div class="io-type-card"><h5>Real-time bidding</h5><p>Buy impressions via auctions.</p></div><div class="io-type-card"><h5>Story</h5><p>Tell a story across screens.</p></div></div></div><div class="form-step"><h4>Add New Line Item</h4><div class="form-group"><label for="line-item-name">Line Item Name</label><input type="text" id="line-item-name" required placeholder="e.g., Q4 Display Prospecting"></div><div class="form-group"><label for="line-item-type">Line Item Type</label><select id="line-item-type"><option>Display</option><option>Video</option><option>TrueView</option><option>Mobile app install</option></select></div></div><div class="form-navigation"><button type="button" id="io-back-btn" class="secondary-btn hidden">Back</button><button type="button" id="io-next-btn" class="create-btn">Next</button><button type="submit" id="io-submit-btn" class="create-btn hidden">Create</button></div></form></div></div>
     <div id="li-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-li-form"><div class="modal-header"><h3>Create New Line Item</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Step 1: Type & Details</h4><div class="form-group"><label for="li-name">Line Item Name</label><input type="text" id="li-name" required placeholder="e.g., Diwali Video Prospecting"></div><div class="form-group"><label>Line Item Type</label><select id="li-type"><option>Display</option><option>Video</option><option>TrueView</option><option>Mobile app install</option></select></div></div><div class="form-step"><h4>Step 2: Bidding</h4><div class="form-group"><label for="bidding-strategy">Bidding Strategy</label><select id="bidding-strategy"><option>Automated Bidding</option><option>Fixed Bid</option><option>Target CPA</option></select></div><div class="info-box"><p><strong>Automated bidding:</strong> Use an automated bid strategy to have DV360 dynamically change your bid based on the likelihood of a conversion.</p></div></div><div class="form-navigation"><button type="button" id="li-back-btn" class="secondary-btn hidden">Back</button><button type="button" id="li-next-btn" class="create-btn">Next</button><button type="submit" id="li-submit-btn" class="create-btn hidden">Create</button></div></form></div></div>
@@ -221,6 +218,135 @@
     <div id="assign-deal-modal" class="modal-overlay hidden"><div class="modal-content" style="max-width: 800px;"><div class="modal-header"><h3>Assign deal to new line item</h3><button type="button" class="close-btn">&times;</button></div><div class="deal-info-header"><div><p>Deal name</p><h4>Google Curated Package - US Hispanic</h4></div><div><p>Deal ID</p><h4>549644393846519461</h4></div><div><p>Rate</p><h4>₹0.01 CPM</h4></div></div><div class="assign-deal-body"><div class="form-group"><label for="li-assign-name">Line item name</label><input type="text" id="li-assign-name" value="Corner Holiday 2025"></div><h4>Inventory source</h4><div class="info-box" style="margin-top: 10px;"><p><strong>Deals and Inventory Packages</strong></p><p>Google Curated Package - US Hispanic</p></div></div><div class="form-navigation"><button id="assign-deal-confirm-btn" class="create-btn">Assign</button><button class="secondary-btn">Cancel</button></div></div></div>
     <div id="exchange-details-modal" class="modal-overlay hidden"><div class="modal-content" style="max-width: 900px;"><div class="modal-header"><h3>Google Ad Manager</h3><button type="button" class="close-btn">&times;</button></div><div class="exchange-details-header"><button id="new-instant-deal-btn" class="create-btn">New Instant Deal</button></div><div class="exchange-details-body"><img src="https://placehold.co/80x80/e8f0fe/1a73e8?text=GAM" alt="Exchange Logo"><div><h2>Google Ad Manager</h2><p>Google Ad Manager provides you access to Google Partner Inventory, inventory from millions of websites, apps and video, from across publishers using Google Ad Manager, AdMob and AdSense.</p></div></div></div></div>
     <div id="instant-deal-modal" class="modal-overlay hidden"><div class="modal-content" style="max-width: 800px;"><form id="instant-deal-form"><div class="modal-header"><h3>New Instant Deal</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Deal Details</h4><div class="form-group"><label>Name</label><input type="text" value="Instant Deal - Sep 30, 2025" required></div><div class="form-group"><label>Advertiser Access</label><input type="text" placeholder="Provide access to advertisers"></div></div><div class="form-navigation"><button type="submit" class="create-btn">Request Forecast</button></div></form></div></div>
+
+    <div id="audience-builder-homepage-modal" class="modal-overlay hidden">
+       <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3>New Audience</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            
+            <h4>Mixed audience types</h4>
+            <div class="audience-builder-grid" style="margin-bottom: 20px;">
+                <div id="create-combined-btn" class="audience-builder-card">
+                    <img src="https://www.gstatic.com/images/icons/material/system/2x/people_alt_gm_blue_48dp.png" alt="Combined Icon">
+                    <h4>Combined audience</h4>
+                    <p>Create an audience by combining existing ones.</p>
+                </div>
+            </div>
+            
+            <h4>First-party data</h4>
+            <p style="color: var(--text-light); margin-bottom: 20px;">Use your own data to reach people who have already engaged with your business.</p>
+            <div class="audience-builder-grid">
+                <div id="create-activity-based-btn" class="audience-builder-card">
+                    <img src="https://www.gstatic.com/images/icons/material/system/2x/trending_up_gm_blue_48dp.png" alt="Activity Icon">
+                    <h4>Activity-based audiences</h4>
+                    <p>Create an audience based on user activity or frequency cap info.</p>
+                </div>
+                <div class="audience-builder-card disabled">
+                    <img src="https://www.gstatic.com/images/icons/material/system/2x/label_gm_blue_48dp.png" alt="Tag Icon">
+                    <h4>Tag-based audiences</h4>
+                    <p>Create an audience based on Floodlight activity data.</p>
+                </div>
+                <div class="audience-builder-card disabled">
+                    <img src="https://www.gstatic.com/images/icons/material/system/2x/play_circle_filled_gm_blue_48dp.png" alt="YouTube Icon">
+                    <h4>YouTube users</h4>
+                    <p>Create an audience based on your YouTube channel.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="activity-audience-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 800px;">
+            <form id="create-activity-audience-form">
+                <div class="modal-header">
+                    <h3>New activity-based audience</h3>
+                    <button type="button" class="close-btn">&times;</button>
+                </div>
+                <div class="form-step active-step">
+                    <h4>Details</h4>
+                    <div class="form-group">
+                        <label for="activity-audience-name">Name</label>
+                        <input type="text" id="activity-audience-name" required placeholder="e.g., Consumers who clicked on an ad">
+                    </div>
+                    <div class="form-group">
+                        <label for="activity-audience-membership">Membership duration (days)</label>
+                        <input type="number" id="activity-audience-membership" value="30" required>
+                    </div>
+                    
+                    <h4 style="margin-top: 30px;">Audience Definition</h4>
+                    <div class="activity-builder-layout">
+                        <div class="activity-builder-main">
+                            <div class="rule-builder-group">
+                                <p>Include users who meet the following criteria from <strong>All campaigns</strong></p>
+                                <div class="rule-input">
+                                    <select>
+                                        <option>Clicks</option>
+                                        <option>Conversions</option>
+                                        <option>Impressions</option>
+                                    </select>
+                                    <span> is greater than </span>
+                                    <input type="number" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <aside class="activity-builder-sidebar">
+                            <h4>Estimated audience size</h4>
+                            <p class="estimate-number">&lt; 1K</p>
+                            <p style="font-size: 0.9rem; color: var(--text-light);">Recently added audience will be available within 4 hours.</p>
+                        </aside>
+                    </div>
+                </div>
+                <div class="form-navigation">
+                    <button type="submit" class="create-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="combined-audience-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px;">
+            <form id="create-combined-form">
+                <div class="modal-header">
+                    <h3>New combined audience</h3>
+                    <button type="button" class="close-btn">&times;</button>
+                </div>
+                <div class="form-group">
+                    <label for="combined-audience-name">Name</label>
+                    <input type="text" id="combined-audience-name" required placeholder="e.g., New car launch July 2021">
+                </div>
+                <div class="form-group">
+                    <label for="combined-audience-desc">Description</label>
+                    <input type="text" id="combined-audience-desc" placeholder="Audiences for branding campaign July 2021">
+                </div>
+                <div class="audience-logic-section">
+                    <h4>Include</h4>
+                    <div class="audience-logic-box">
+                        <div id="included-audiences-container">
+                        </div>
+                        <button type="button" id="add-include-audience-btn" class="secondary-btn">Add audiences</button>
+                    </div>
+                </div>
+                <div class="form-navigation">
+                    <button type="submit" class="create-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="audience-picker-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Select audiences to include</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div id="picker-audience-list" class="audience-picker-list">
+            </div>
+            <div class="form-navigation">
+                <button type="button" id="apply-audience-selection-btn" class="create-btn">Apply</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
-
