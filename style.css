@@ -1057,16 +1057,12 @@ th {
     font-size: 0.9rem;
 }
 /* ===== NEW: Main Header Redesign ===== */
-
-/* Main Header Layout */
 .main-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 24px; /* Adjusted padding */
+    padding: 12px 24px;
 }
-
-/* Breadcrumb Styles (Left Side) */
 .header-breadcrumb {
     display: flex;
     align-items: center;
@@ -1083,14 +1079,11 @@ th {
 .header-breadcrumb p {
     margin: 0;
 }
-
-/* Toolbar Styles (Right Side) */
 .header-toolbar {
     display: flex;
     align-items: center;
     gap: 8px;
 }
-
 .header-icon-btn {
     background: none;
     border: none;
@@ -1104,16 +1097,14 @@ th {
     transition: background-color 0.2s;
     color: var(--text-light);
 }
-
 .header-icon-btn:hover {
     background-color: var(--background-grey);
 }
-
 .header-user-profile {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: #673AB7; /* Example color */
+    background-color: #673AB7;
     color: var(--white);
     display: flex;
     align-items: center;
@@ -1122,4 +1113,50 @@ th {
     font-size: 0.9rem;
     cursor: pointer;
     margin-left: 12px;
+}
+
+/* ===== NEW: Report Builder Styles ===== */
+.report-filters-container {
+    margin-top: 16px;
+    border: 1px solid var(--border-grey);
+    border-radius: 8px;
+}
+.filter-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-grey);
+}
+.filter-row:last-child {
+    border-bottom: none;
+}
+.filter-tag-label {
+    font-weight: 500;
+    width: 120px;
+    flex-shrink: 0;
+    color: var(--text-dark);
+}
+.filter-chip {
+    display: flex;
+    align-items: center;
+    background: var(--status-active-bg);
+    border: 1px solid var(--status-active-text);
+    color: var(--status-active-text);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.filter-chip span {
+    margin-right: 8px;
+}
+.filter-chip button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    color: var(--status-active-text);
 }
