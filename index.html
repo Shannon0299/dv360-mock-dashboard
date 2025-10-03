@@ -20,35 +20,34 @@
                     <li><a href="#">Audiences</a></li>
                     <li><a href="#">Creatives</a></li>
                     <li><a href="#">Inventory</a></li>
-                    <li><a href="#">Reporting</a></li>
+                    <li><a href="#">Insights</a></li>
                 </ul>
             </nav>
         </aside>
 
         <div class="main-content">
             <header class="main-header">
-    <div class="header-breadcrumb">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        <span>&gt;</span>
-        <p>[NEW] Google Merchandise Store </p>
-    </div>
+                <div class="header-breadcrumb">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span>&gt;</span>
+                    <p>[NEW] Google Merchandise Store </p>
+                </div>
 
-    <div class="header-toolbar">
-        <button class="header-icon-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        </button>
-        <button class="header-icon-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
-        </button>
-        <button class="header-icon-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-        </button>
-        <button class="header-icon-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg>
-        </button>
-        <div class="header-user-profile">G</div>
-    </div>
-</header>
+                <div class="header-toolbar">
+                    <button class="header-icon-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </button>
+                    <button class="header-icon-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
+                    </button>
+                    <button class="header-icon-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    </button>
+                    <button id="header-insights-btn" class="header-icon-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg>
+                    </button>
+                    <div class="header-user-profile">G</div>
+                </div>
             </header>
 
             <main>
@@ -207,19 +206,26 @@
                     </div>
                 </section>
                 
-                <section id="reporting-view" class="hidden">
-                    <div class="view-header"><h2>Reporting</h2></div>
-                    <div class="report-controls">
-                        <div class="form-group"><label>Visualization Type</label><select id="visualization-type"><option value="table">Flat Table</option><option value="bar">Bar Chart</option><option value="line">Time Series (Line Chart)</option><option value="pie">Pie Chart</option></select></div>
-                        <div class="form-group"><label>Dimension</label><select id="report-dimension"><option>Campaign</option><option>Date</option></select></div>
-                        <div class="form-group"><label>Metric</label><select id="report-metric"><option>Impressions</option><option>Clicks</option></select></div>
-                        <button id="run-report-btn" class="create-btn">Run Report</button>
+                <section id="insights-view" class="hidden">
+                    <div class="view-header">
+                        <h2>Reports</h2>
                     </div>
-                    <div class="report-display-area">
-                        <div id="report-table-container" class="report-visual active-visual"></div>
-                        <div class="report-visual chart-container"><canvas id="bar-chart-canvas"></canvas></div>
-                        <div class="report-visual chart-container"><canvas id="line-chart-canvas"></canvas></div>
-                        <div class="report-visual chart-container"><canvas id="pie-chart-canvas"></canvas></div>
+                    <nav class="sub-navigation">
+                        <ul>
+                            <li data-tab="instant-reporting">INSTANT REPORTING</li>
+                            <li class="active-tab" data-tab="offline-reporting">OFFLINE REPORTING</li>
+                        </ul>
+                    </nav>
+                    <div id="offline-reporting-content" class="tab-content active-tab-content">
+                        <div class="campaign-list-header">
+                            <button id="new-offline-report-btn" class="create-btn">New Offline Report</button>
+                        </div>
+                        <div id="offline-report-list-container">
+                             <p style="text-align: center; color: var(--text-light); padding: 40px;">No offline reports have been created yet.</p>
+                        </div>
+                    </div>
+                    <div id="instant-reporting-content" class="tab-content">
+                        <p style="text-align: center; color: var(--text-light); padding: 40px;">Instant reporting functionality is not available in this demo.</p>
                     </div>
                 </section>
             </main>
@@ -369,5 +375,67 @@
             </div>
         </div>
     </div>
+
+    <div id="report-builder-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3>New Standard Report</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <form id="create-report-form">
+                <h4>Report properties</h4>
+                <div class="form-group">
+                    <label for="report-name">Report name</label>
+                    <input type="text" id="report-name" value="Variant_Reporting_for_Optimization_September" required>
+                </div>
+                <div class="form-group">
+                    <label for="date-range">Date range</label>
+                    <select id="date-range">
+                        <option>Last 7 days</option>
+                        <option>Last 30 days</option>
+                        <option>This Month</option>
+                        <option>Last Month</option>
+                        <option>Custom</option>
+                    </select>
+                </div>
+                <h4 style="margin-top: 30px;">Report setup</h4>
+                <div class="form-group">
+                    <label for="report-template">Report template</label>
+                    <select id="report-template">
+                        <option>Basic</option>
+                        <option>Audience Performance</option>
+                        <option>Creative Performance</option>
+                    </select>
+                </div>
+                <h4 style="margin-top: 30px;">Filters</h4>
+                <div class="report-filters-container">
+                    <div class="filter-row">
+                        <span class="filter-tag-label">Partner</span>
+                        <div class="filter-chip">
+                            <span>Google Merchandise Store</span>
+                            <button type="button">&times;</button>
+                        </div>
+                        <button class="secondary-btn">+ add / remove</button>
+                    </div>
+                    <div class="filter-row">
+                        <span class="filter-tag-label">Advertiser</span>
+                        <button class="secondary-btn">+ add</button>
+                    </div>
+                     <div class="filter-row">
+                        <span class="filter-tag-label">Insertion Order</span>
+                        <button class="secondary-btn">+ add</button>
+                    </div>
+                     <div class="filter-row">
+                        <span class="filter-tag-label">Line Item</span>
+                        <button class="secondary-btn">+ add</button>
+                    </div>
+                </div>
+                <div class="form-navigation">
+                    <button type="submit" class="create-btn">Save & Run</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>
