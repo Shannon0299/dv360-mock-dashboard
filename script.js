@@ -16,10 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "LI-02: Video Preroll - Diwali", insertionOrder: "IO-01: Diwali Promo", type: "Video", status: "Underspending"},
         { name: "LI-03: Display Ads - Remarketing", insertionOrder: "IO-02: Remarketing", type: "Display", status: "Paused"}
     ];
-    const audienceListData = [
+    let audienceListData = [
         { name: "Homepage Visitors (Last 30d)", type: "1st Party", source: "Advertiser", size: { display: 1800000, youtube: 950000, mobile: 1200000 } },
         { name: "High-Intent Car Buyers", type: "Google Audience", source: "Google Ads", size: { display: 25000000, youtube: 15000000, mobile: 18000000 } }
     ];
+    let combinedAudienceData = [];
     const creativeListData = [
         { id: 1, name: "Q4 Holiday Sale - 300x250", type: "Display", dimensions: "300 x 250", status: "Approved", imageUrl: "https://placehold.co/300x250/E8F0FE/1A73E8?text=Holiday+Sale!" },
         { id: 2, name: "Summer Branding Video", type: "Video", dimensions: "1920 x 1080", status: "Approved", imageUrl: "https://placehold.co/640x360/E8F0FE/1A73E8?text=Summer+Video" },
@@ -35,10 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "Standard Display", description: "Classic banner ads in all IAB sizes.", creativeId: 1 },
         { name: "Video Preroll", description: "Video ads that play before YouTube content.", creativeId: 2 },
     ];
-    const reportData = {
-        campaign: { labels: ["Post-Ganesh Chaturthi Sale", "Pre-Diwali Brand Awareness", "Always-On Targeting"], data: [12500000, 8200000, 18000000] },
-        date: { labels: ["2025-09-20", "2025-09-21", "2025-09-22", "2025-09-23", "2025-09-24", "2025-09-25", "2025-09-26"], data: [250000, 220000, 280000, 310000, 290000, 350000, 330000] },
-    };
+    let offlineReportsData = [];
     const intelligenceAlertsData = [
         { title: "Underpacing Insertion Order", severity: "warning", description: "IO-02: Remarketing is projected to underspend its budget by 45%.", actions: ["Troubleshoot", "Details"] },
         { title: "Creative Approval Needed", severity: "warning", description: "1 creative in 'Pre-Diwali Brand Awareness' is still in review.", actions: ["Details"] },
@@ -72,137 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "Google Ad Manager", logo: "https://placehold.co/48x48/e8f0fe/1a73e8?text=G", isInstant: true },
         { name: "Hulu", logo: "https://placehold.co/48x48/1CE783/FFFFFF?text=h", isInstant: false },
     ];
-    // ===== NEW FUNCTION =====
-const setupAudienceBuilder = () => {
-    if (!newAudienceBtn || !audienceBuilderModal || !activityAudienceModal) return;
-
-    // Open the main Audience Builder Homepage
-    newAudienceBtn.addEventListener('click', () => {
-        audienceBuilderModal.classList.remove('hidden');
-    });
-
-    // Close button for builder homepage
-    audienceBuilderModal.querySelector('.close-btn').addEventListener('click', () => {
-        audienceBuilderModal.classList.add('hidden');
-    });
-
-    // Handle click on the "Activity-based" card
-    const createActivityBtn = audienceBuilderModal.querySelector('#create-activity-based-btn');
-    if (createActivityBtn) {
-        createActivityBtn.addEventListener('click', () => {
-            audienceBuilderModal.classList.add('hidden'); // Close first modal
-            activityAudienceModal.classList.remove('hidden'); // Open second modal
-        });
-    }
-
-    // Handle the final form submission
-    const activityForm = activityAudienceModal.querySelector('#create-activity-audience-form');
-    if (activityForm) {
-        activityAudienceModal.querySelector('.close-btn').addEventListener('click', () => {
-            activityAudienceModal.classList.add('hidden');
-        });
-
-        activityForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const newAudienceName = activityForm.querySelector('#activity-audience-name').value;
-
-            // Create the new audience object
-            const newAudience = {
-                name: newAudienceName,
-                type: "Activity-based",
-                source: "Display & Video 360",
-                size: { display: 800, youtube: 0, mobile: 500 } // Mock data for size < 1K
-            };
-
-            // Add to our data array and re-render the table
-            audienceListData.push(newAudience);
-            renderAudienceTable(audienceListData);
-
-            // Close the modal and reset the form
-            activityAudienceModal.classList.add('hidden');
-            activityForm.reset();
-
-            // Show a confirmation
-            alert(`New audience "${newAudienceName}" has been created!`);
-        });
-    }
-};
-// ===== NEW FUNCTION =====
-const setupCombinedAudienceBuilder = () => {
-    if (!audienceBuilderModal || !combinedAudienceModal || !audiencePickerModal) return;
-
-    const createCombinedBtn = audienceBuilderModal.querySelector('#create-combined-btn');
-    let selectedForCombination = []; // Temp array to hold selections
-
-    // 1. Open the main combined builder from the homepage
-    createCombinedBtn.addEventListener('click', () => {
-        audienceBuilderModal.classList.add('hidden');
-        combinedAudienceModal.classList.remove('hidden');
-    });
-
-    // 2. Open the audience picker
-    const addAudienceBtn = combinedAudienceModal.querySelector('#add-include-audience-btn');
-    addAudienceBtn.addEventListener('click', () => {
-        const pickerList = audiencePickerModal.querySelector('#picker-audience-list');
-        pickerList.innerHTML = audienceListData.map(audience => `
-            <span class="audience-picker-item">
-                <label>
-                    <input type="checkbox" value="${audience.name}">
-                    ${audience.name}
-                </label>
-            </span>
-        `).join('');
-        audiencePickerModal.classList.remove('hidden');
-    });
-
-    // 3. Apply selections from the picker
-    const applyBtn = audiencePickerModal.querySelector('#apply-audience-selection-btn');
-    applyBtn.addEventListener('click', () => {
-        const checkedBoxes = audiencePickerModal.querySelectorAll('input[type="checkbox"]:checked');
-        selectedForCombination = Array.from(checkedBoxes).map(cb => cb.value);
-
-        const includedContainer = combinedAudienceModal.querySelector('#included-audiences-container');
-        includedContainer.innerHTML = selectedForCombination.map(name => `
-            <div class="included-audience-card">
-                <span>${name}</span>
-                <button type="button" class="close-btn">&times;</button>
-            </div>
-        `).join('');
-
-        audiencePickerModal.classList.add('hidden');
-    });
-
-    // 4. Save the final combined audience
-    const combinedForm = combinedAudienceModal.querySelector('#create-combined-form');
-    combinedForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const newName = combinedForm.querySelector('#combined-audience-name').value;
-
-        const newAudience = {
-            name: newName,
-            type: 'Combined',
-            source: 'Advertiser'
-        };
-
-        combinedAudienceData.push(newAudience);
-        renderCombinedAudienceTable(combinedAudienceData);
-
-        combinedAudienceModal.classList.add('hidden');
-        combinedForm.reset();
-        combinedAudienceModal.querySelector('#included-audiences-container').innerHTML = '';
-        alert(`New combined audience "${newName}" was saved!`);
-    });
-
-    // Close buttons for the modals
-    combinedAudienceModal.querySelector('.close-btn').addEventListener('click', () => combinedAudienceModal.classList.add('hidden'));
-    audiencePickerModal.querySelector('.close-btn').addEventListener('click', () => audiencePickerModal.classList.add('hidden'));
-};
+    
     // ===== DOM ELEMENT SELECTION =====
-    const combinedAudienceListContainer = document.getElementById('combined-audience-list-container');
-    const combinedAudienceModal = document.getElementById('combined-audience-modal');
-    const audiencePickerModal = document.getElementById('audience-picker-modal');
-const newAudienceBtn = document.getElementById('new-audience-btn');    const audienceBuilderModal = document.getElementById('audience-builder-homepage-modal');
-    const activityAudienceModal = document.getElementById('activity-audience-modal');
     const allViews = document.querySelectorAll('main > section');
     const sidebarNav = document.querySelector('.sidebar-nav');
     const navLinks = document.querySelectorAll('.sidebar-nav li');
@@ -211,6 +80,7 @@ const newAudienceBtn = document.getElementById('new-audience-btn');    const aud
     const ioListContainer = document.getElementById('insertion-order-list-container');
     const liListContainer = document.getElementById('line-item-list-container');
     const audienceListContainer = document.getElementById('audience-list-container');
+    const combinedAudienceListContainer = document.getElementById('combined-audience-list-container');
     const creativeListContainer = document.getElementById('creative-list-container');
     const teamListContainer = document.getElementById('team-list-container');
     const formatGalleryContainer = document.getElementById('format-gallery-grid-container');
@@ -219,6 +89,7 @@ const newAudienceBtn = document.getElementById('new-audience-btn');    const aud
     const negotiationsListContainer = document.getElementById('negotiations-list-container');
     const inventoryPackagesContainer = document.getElementById('inventory-packages-container');
     const featuredPublishersContainer = document.getElementById('featured-publishers-container');
+    const offlineReportListContainer = document.getElementById('offline-report-list-container');
 
     const campaignTabs = document.querySelectorAll('#campaign-view .sub-navigation li');
     const campaignTabContents = document.querySelectorAll('#campaign-view .tab-content');
@@ -228,6 +99,8 @@ const newAudienceBtn = document.getElementById('new-audience-btn');    const aud
     const creativeTabContents = document.querySelectorAll('#creatives-view .tab-content');
     const inventoryTabs = document.querySelectorAll('#inventory-view .sub-navigation li');
     const inventoryTabContents = document.querySelectorAll('#inventory-view .tab-content');
+    const insightsTabs = document.querySelectorAll('#insights-view .sub-navigation li');
+    const insightsTabContents = document.querySelectorAll('#insights-view .tab-content');
     const marketplaceTopTabs = document.querySelectorAll('.marketplace-top-tab');
     const marketplaceTopTabContents = document.querySelectorAll('.marketplace-top-tab-content');
     const marketplaceSubTabs = document.querySelectorAll('.marketplace-tabs.sub .marketplace-sub-tab');
@@ -255,13 +128,15 @@ const newAudienceBtn = document.getElementById('new-audience-btn');    const aud
     const exchangeDetailsModal = document.getElementById('exchange-details-modal');
     const newInstantDealBtn = document.getElementById('new-instant-deal-btn');
     const instantDealModal = document.getElementById('instant-deal-modal');
+    const newAudienceBtn = document.getElementById('new-audience-btn');
+    const audienceBuilderModal = document.getElementById('audience-builder-homepage-modal');
+    const activityAudienceModal = document.getElementById('activity-audience-modal');
+    const combinedAudienceModal = document.getElementById('combined-audience-modal');
+    const audiencePickerModal = document.getElementById('audience-picker-modal');
+    const headerInsightsBtn = document.getElementById('header-insights-btn');
+    const newOfflineReportBtn = document.getElementById('new-offline-report-btn');
+    const reportBuilderModal = document.getElementById('report-builder-modal');
 
-    const runReportBtn = document.getElementById('run-report-btn');
-    const vizTypeSelect = document.getElementById('visualization-type');
-    const reportVisuals = document.querySelectorAll('.report-visual');
-    const reportTableContainer = document.getElementById('report-table-container');
-    let activeBarChart, activeLineChart, activePieChart;
-    
     const campaignGoalSelect = document.getElementById('campaign-goal');
     const campaignKpiSelect = document.getElementById('campaign-kpi');
 
@@ -274,11 +149,10 @@ const newAudienceBtn = document.getElementById('new-audience-btn');    const aud
     const renderInsertionOrderTable = (data) => { if (!ioListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>IO Name</th><th>Campaign</th><th>Status</th><th>Spend / Budget</th></tr></thead><tbody>`; data.forEach(io => { html += `<tr><td>${io.name}</td><td>${io.campaign}</td><td><span class="status status-${io.status.toLowerCase()}">${io.status}</span></td><td>${formatCurrency(io.spent)} / ${formatCurrency(io.budget)}</td></tr>`; }); html += `</tbody></table></div>`; ioListContainer.innerHTML = html; };
     const renderLineItemTable = (data) => { if (!liListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Line Item Name</th><th>Insertion Order</th><th>Type</th><th>Status</th></tr></thead><tbody>`; data.forEach(li => { html += `<tr><td>${li.name}</td><td>${li.insertionOrder}</td><td>${li.type}</td><td><span class="status status-${li.status.toLowerCase().replace(' ', '-')}">${li.status}</span></td></tr>`; }); html += `</tbody></table></div>`; liListContainer.innerHTML = html; };
     const renderAudienceTable = (data) => { if (!audienceListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Audience Name</th><th>Type</th><th>Source</th><th>Size (Users)</th></tr></thead><tbody>`; data.forEach(a => { html += `<tr><td>${a.name}</td><td>${a.type}</td><td>${a.source}</td><td><ul class="audience-size-list"><li><span class="media-type">Display:</span> <strong>${formatNumber(a.size.display)}</strong></li><li><span class="media-type">YouTube:</span> <strong>${formatNumber(a.size.youtube)}</strong></li><li><span class="media-type">Mobile:</span> <strong>${formatNumber(a.size.mobile)}</strong></li></ul></td></tr>`; }); html += `</tbody></table></div>`; audienceListContainer.innerHTML = html; };
+    const renderCombinedAudienceTable = (data) => { if (!combinedAudienceListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Name</th><th>Type</th><th>Source</th></tr></thead><tbody>`; if (data.length === 0) { html += `<tr><td colspan="3" style="text-align:center; color: var(--text-light);">No combined audiences created yet.</td></tr>`; } else { data.forEach(c => { html += `<tr><td>${c.name}</td><td><span class="status status-in-review">${c.type}</span></td><td>${c.source}</td></tr>`; }); } html += `</tbody></table></div>`; combinedAudienceListContainer.innerHTML = html; };
     const renderCreativeTable = (data) => { if (!creativeListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Preview</th><th>Name</th><th>Type</th><th>Dimensions</th><th>Status</th><th>Actions</th></tr></thead><tbody>`; data.forEach(c => { html += `<tr><td><img src="${c.imageUrl}" alt="preview" style="height: 30px; vertical-align: middle;"></td><td>${c.name}</td><td>${c.type}</td><td>${c.dimensions}</td><td><span class="status status-${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span></td><td><button class="preview-btn" data-creative-id="${c.id}">Preview</button></td></tr>`; }); html += `</tbody></table></div>`; creativeListContainer.innerHTML = html; };
     const renderTeamMembers = (data) => { if (!teamListContainer) return; let html = ''; data.forEach(m => { html += `<div class="team-member-card"><div class="team-member-avatar">${m.initials}</div><div class="team-member-details"><h4>${m.name}</h4><p>${m.role}</p></div></div>`; }); teamListContainer.innerHTML = html; };
     const renderFormatGallery = (data) => { if (!formatGalleryContainer) return; let html = ''; data.forEach(f => { html += `<div class="format-card"><div class="card-content"><h4>${f.name}</h4><p>${f.description}</p></div><div class="card-actions"><button class="create-btn format-create-btn" data-creative-id="${f.creativeId}">Create</button></div></div>`; }); formatGalleryContainer.innerHTML = html; };
-    const renderReportTable = (data) => { if (!reportTableContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Dimension</th><th>Metric</th></tr></thead><tbody>`; data.labels.forEach((label, index) => { html += `<tr><td>${label}</td><td>${formatNumber(data.data[index])}</td></tr>`; }); html += `</tbody></table></div>`; reportTableContainer.innerHTML = html; };
-    const renderChart = (canvasId, chartInstance, type, data, label) => { const canvasEl = document.getElementById(canvasId); if (!canvasEl) return; if (chartInstance) chartInstance.destroy(); const datasets = [{ label, data: data.data, backgroundColor: ['#1a73e8', '#fbbc05', '#34a853', '#ea4335', '#4285f4'], borderColor: '#1a73e8', fill: false }]; return new Chart(canvasEl.getContext('2d'), { type, data: { labels: data.labels, datasets }, options: { responsive: true, maintainAspectRatio: false } }); };
     const renderIntelligencePanel = (alerts) => { const panelContent = document.getElementById('intelligence-panel-content'); if (!panelContent) return; let html = ''; alerts.forEach(alert => { const actionsHtml = alert.actions.map(action => `<button class="action-btn">${action}</button>`).join(''); html += `<div class="insight-card"><div class="insight-header ${alert.severity}">${alert.title}</div><div class="insight-body">${alert.description}</div><div class="insight-actions">${actionsHtml}</div></div>`; }); panelContent.innerHTML = html; };
     const renderMyInventoryTable = (data) => { if (!myInventoryListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Deal Name</th><th>Type</th><th>Status</th></tr></thead><tbody>`; data.forEach(deal => { html += `<tr><td>${deal.name}</td><td>${deal.type}</td><td><span class="status status-${deal.status.toLowerCase()}">${deal.status}</span></td></tr>`; }); html += `</tbody></table></div>`; myInventoryListContainer.innerHTML = html; };
     const renderMarketplaceTable = (data) => { if (!marketplaceTableContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th><input type="checkbox" id="select-all-publishers"></th><th>Publisher</th><th>Impressions</th><th>Cookies</th><th>Display</th><th>Video</th></tr></thead><tbody>`; data.forEach(p => { html += `<tr data-id="${p.id}"><td><input type="checkbox" class="publisher-checkbox"></td><td><strong>${p.name}</strong></td><td>${p.impressions}</td><td>${p.cookies}</td><td>${p.display}</td><td>${p.video}</td></tr>`; }); html += `</tbody></table></div>`; marketplaceTableContainer.innerHTML = html; };
@@ -286,31 +160,19 @@ const newAudienceBtn = document.getElementById('new-audience-btn');    const aud
     const renderNegotiationsTable = (data) => { if (!negotiationsListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Name</th><th>Seller</th><th>Status</th><th>Start Date</th></tr></thead><tbody>`; data.forEach(n => { html += `<tr><td>${n.name}</td><td>${n.seller}</td><td><span class="status status-${n.status.toLowerCase()}">${n.status}</span></td><td>${n.startDate}</td></tr>`; }); html += `</tbody></table></div>`; negotiationsListContainer.innerHTML = html; };
     const renderInventoryPackages = (data) => { if (!inventoryPackagesContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Auction Package</th><th>ID</th><th>Exchange</th><th>Impressions</th><th>Uniques</th></tr></thead><tbody>`; data.forEach(p => { html += `<tr class="package-row"><td><a href="#" class="package-link">${p.name}</a></td><td>${p.id}</td><td>${p.exchange}</td><td>${p.impressions}</td><td>${p.uniques}</td></tr>`; }); html += `</tbody></table></div>`; inventoryPackagesContainer.innerHTML = html; };
     const renderFeaturedPublishers = (data) => { if (!featuredPublishersContainer) return; let html = ''; data.forEach(p => { html += `<div class="featured-card" data-instant="${p.isInstant}">${p.isInstant ? '<div class="instant-deal-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 21L14.4 12.5L10.5 10.5L12 3L4.4 12.5L8.5 14.5L7 21Z"/></svg></div>' : ''}<img src="${p.logo}" alt="${p.name} logo"><p>${p.name}</p></div>`; }); featuredPublishersContainer.innerHTML = html; };
-    
+    const renderOfflineReportsTable = (data) => { if (!offlineReportListContainer) return; if (data.length === 0) { offlineReportListContainer.innerHTML = `<p style="text-align: center; color: var(--text-light); padding: 40px;">No offline reports have been created yet.</p>`; return; } let html = `<div id="campaign-table-container"><table><thead><tr><th>Report Name</th><th>Report Type</th><th>Date Range</th><th>Created By</th><th>Last Run</th></tr></thead><tbody>`; data.forEach(report => { html += `<tr><td>${report.name}</td><td><span class="status status-in-review">${report.type}</span></td><td>${report.dateRange}</td><td>student@example.com</td><td>${report.lastRun}</td></tr>`; }); html += `</tbody></table></div>`; offlineReportListContainer.innerHTML = html; };
     const updateKpiOptions = () => { if (!campaignGoalSelect || !campaignKpiSelect) return; const selectedGoal = campaignGoalSelect.value; const kpiOptions = kpiOptionsByGoal[selectedGoal] || []; campaignKpiSelect.innerHTML = kpiOptions.map(kpi => `<option>${kpi}</option>`).join(''); };
-// With your other RENDER FUNCTIONS
-const renderCombinedAudienceTable = (data) => { 
-    if (!combinedAudienceListContainer) return; 
-    let html = `<div id="campaign-table-container"><table><thead><tr><th>Name</th><th>Type</th><th>Source</th></tr></thead><tbody>`; 
-    if (data.length === 0) {
-        html += `<tr><td colspan="3" style="text-align:center; color: var(--text-light);">No combined audiences created yet.</td></tr>`;
-    } else {
-        data.forEach(c => { 
-            html += `<tr><td>${c.name}</td><td><span class="status status-in-review">${c.type}</span></td><td>${c.source}</td></tr>`; 
-        }); 
-    }
-    html += `</tbody></table></div>`; 
-    combinedAudienceListContainer.innerHTML = html; 
-};
+    
     // ===== EVENT LISTENERS =====
     const showView = (viewId) => { allViews.forEach(v => v.classList.add('hidden')); const vts = document.getElementById(viewId); if (vts) vts.classList.remove('hidden'); };
-    if (sidebarNav) { sidebarNav.addEventListener('click', (event) => { event.preventDefault(); const link = event.target.closest('a'); if (!link) return; navLinks.forEach(l => l.classList.remove('active')); link.parentElement.classList.add('active'); const text = link.textContent.toLowerCase(); let viewId = 'campaign-view'; if (text.includes('audiences')) viewId = 'audiences-view'; else if (text.includes('creatives')) viewId = 'creatives-view'; else if (text.includes('inventory')) viewId = 'inventory-view'; else if (text.includes('reporting')) viewId = 'reporting-view'; showView(viewId); }); }
+    if (sidebarNav) { sidebarNav.addEventListener('click', (event) => { event.preventDefault(); const link = event.target.closest('a'); if (!link) return; navLinks.forEach(l => l.classList.remove('active')); link.parentElement.classList.add('active'); const text = link.textContent.toLowerCase(); let viewId = 'campaign-view'; if (text.includes('audiences')) viewId = 'audiences-view'; else if (text.includes('creatives')) viewId = 'creatives-view'; else if (text.includes('inventory')) viewId = 'inventory-view'; else if (text.includes('insights')) viewId = 'insights-view'; showView(viewId); }); }
     
-    const setupTabs = (tabs, contents) => { if (tabs && contents.length) { tabs.forEach(tab => tab.addEventListener('click', () => { const id = tab.dataset.tab; tabs.forEach(t => t.classList.remove('active-tab')); tab.classList.add('active-tab'); contents.forEach(c => c.classList.toggle('active-tab-content', c.id === `${id}-content`)); })); }};
+    const setupTabs = (tabs, contents) => { if (!tabs || !contents.length) return; tabs.forEach(tab => tab.addEventListener('click', () => { const id = tab.dataset.tab; tabs.forEach(t => t.classList.remove('active-tab')); tab.classList.add('active-tab'); contents.forEach(c => c.classList.toggle('active-tab-content', c.id === `${id}-content` || c.id === `${id}-view`)); })); };
     setupTabs(campaignTabs, campaignTabContents);
     setupTabs(audienceTabs, audienceTabContents);
     setupTabs(creativeTabs, creativeTabContents);
     setupTabs(inventoryTabs, inventoryTabContents);
+    setupTabs(insightsTabs, insightsTabContents);
 
     const setupSubTabs = (tabs, contents) => { if (tabs && contents.length) { tabs.forEach(tab => { tab.addEventListener('click', (e) => { const id = e.target.dataset.tab; tabs.forEach(t => t.classList.remove('active')); e.target.classList.add('active'); contents.forEach(c => c.classList.toggle('active', c.id === id)); }); }); }};
     setupSubTabs(marketplaceTopTabs, marketplaceTopTabContents);
@@ -324,13 +186,15 @@ const renderCombinedAudienceTable = (data) => {
     setupModal(newUserBtn, userModal, (close) => { alert('New user added!'); close(); });
     setupModal(requestProposalBtn, rfpModal, (close) => { alert('RFP Sent!'); close(); });
     setupModal(compareBtn, compareModal, () => {});
-    setupModal(assignToLiBtn, assignDealModal, (close) => { alert('Deal Assigned to New Line Item!'); close(); if(packageDetailsModal) packageDetailsModal.classList.add('hidden'); });
-    setupModal(newInstantDealBtn, instantDealModal, (close) => { alert('Forecast Requested! Your deal is now in Negotiations.'); close(); if(exchangeDetailsModal) exchangeDetailsModal.classList.add('hidden'); });
+    setupModal(assignToLiBtn, assignDealModal, (close) => { alert('Deal Assigned to New Line Item!'); if(packageDetailsModal) packageDetailsModal.classList.add('hidden'); close(); });
+    setupModal(newInstantDealBtn, instantDealModal, (close) => { alert('Forecast Requested! Your deal is now in Negotiations.'); if(exchangeDetailsModal) exchangeDetailsModal.classList.add('hidden'); close(); });
+    setupModal(newOfflineReportBtn, reportBuilderModal, (close) => { const form = reportBuilderModal.querySelector('#create-report-form'); const reportName = form.querySelector('#report-name').value; const dateRange = form.querySelector('#date-range').value; const newReport = { name: reportName, type: 'Standard', dateRange: dateRange, lastRun: new Date().toLocaleDateString('en-CA') }; offlineReportsData.push(newReport); renderOfflineReportsTable(offlineReportsData); alert(`Report "${reportName}" was saved and is running.`); close(); });
+    
+    const setupAudienceBuilder = () => { if (!newAudienceBtn || !audienceBuilderModal || !activityAudienceModal) return; newAudienceBtn.addEventListener('click', () => { audienceBuilderModal.classList.remove('hidden'); }); audienceBuilderModal.querySelector('.close-btn').addEventListener('click', () => { audienceBuilderModal.classList.add('hidden'); }); const createActivityBtn = audienceBuilderModal.querySelector('#create-activity-based-btn'); if (createActivityBtn) { createActivityBtn.addEventListener('click', () => { audienceBuilderModal.classList.add('hidden'); activityAudienceModal.classList.remove('hidden'); }); } const activityForm = activityAudienceModal.querySelector('#create-activity-audience-form'); if (activityForm) { activityAudienceModal.querySelector('.close-btn').addEventListener('click', () => { activityAudienceModal.classList.add('hidden'); }); activityForm.addEventListener('submit', (e) => { e.preventDefault(); const newAudienceName = activityForm.querySelector('#activity-audience-name').value; const newAudience = { name: newAudienceName, type: "Activity-based", source: "Display & Video 360", size: { display: 800, youtube: 0, mobile: 500 } }; audienceListData.push(newAudience); renderAudienceTable(audienceListData); activityAudienceModal.classList.add('hidden'); activityForm.reset(); alert(`New audience "${newAudienceName}" has been created!`); }); } };
+    const setupCombinedAudienceBuilder = () => { if (!audienceBuilderModal || !combinedAudienceModal || !audiencePickerModal) return; const createCombinedBtn = audienceBuilderModal.querySelector('#create-combined-btn'); let selectedForCombination = []; createCombinedBtn.addEventListener('click', () => { audienceBuilderModal.classList.add('hidden'); combinedAudienceModal.classList.remove('hidden'); }); const addAudienceBtn = combinedAudienceModal.querySelector('#add-include-audience-btn'); addAudienceBtn.addEventListener('click', () => { const pickerList = audiencePickerModal.querySelector('#picker-audience-list'); pickerList.innerHTML = audienceListData.map(audience => `<span class="audience-picker-item"><label><input type="checkbox" value="${audience.name}"> ${audience.name}</label></span>`).join(''); audiencePickerModal.classList.remove('hidden'); }); const applyBtn = audiencePickerModal.querySelector('#apply-audience-selection-btn'); applyBtn.addEventListener('click', () => { const checkedBoxes = audiencePickerModal.querySelectorAll('input[type="checkbox"]:checked'); selectedForCombination = Array.from(checkedBoxes).map(cb => cb.value); const includedContainer = combinedAudienceModal.querySelector('#included-audiences-container'); includedContainer.innerHTML = selectedForCombination.map(name => `<div class="included-audience-card"><span>${name}</span><button type="button" class="close-btn">&times;</button></div>`).join(''); audiencePickerModal.classList.add('hidden'); }); const combinedForm = combinedAudienceModal.querySelector('#create-combined-form'); combinedForm.addEventListener('submit', (e) => { e.preventDefault(); const newName = combinedForm.querySelector('#combined-audience-name').value; const newAudience = { name: newName, type: 'Combined', source: 'Advertiser' }; combinedAudienceData.push(newAudience); renderCombinedAudienceTable(combinedAudienceData); combinedAudienceModal.classList.add('hidden'); combinedForm.reset(); combinedAudienceModal.querySelector('#included-audiences-container').innerHTML = ''; alert(`New combined audience "${newName}" was saved!`); }); combinedAudienceModal.querySelector('.close-btn').addEventListener('click', () => combinedAudienceModal.classList.add('hidden')); audiencePickerModal.querySelector('.close-btn').addEventListener('click', () => audiencePickerModal.classList.add('hidden')); };
 
     if (adCanvasModal) { const openAdCanvas = (creativeId) => { const creative = creativeListData.find(c => c.id === creativeId); if (!creative) return; adCanvasModal.querySelector('#ad-canvas-title').textContent = `Ad Canvas: ${creative.name}`; adCanvasModal.querySelector('#ad-canvas-image').src = creative.imageUrl; const defaultDevice = adCanvasModal.querySelector('[data-size="300x250"]'); if (defaultDevice) defaultDevice.click(); adCanvasModal.classList.remove('hidden'); }; adCanvasModal.querySelector('.close-btn').addEventListener('click', () => adCanvasModal.classList.add('hidden')); if (creativeListContainer) { creativeListContainer.addEventListener('click', (e) => { if (e.target.classList.contains('preview-btn')) { openAdCanvas(parseInt(e.target.dataset.creativeId, 10)); } }); } if (formatGalleryContainer) { formatGalleryContainer.addEventListener('click', (e) => { if (e.target.classList.contains('format-create-btn')) { openAdCanvas(parseInt(e.target.dataset.creativeId, 10)); } }); } const adCanvasPreviewArea = adCanvasModal.querySelector('.ad-canvas-preview-area'); const deviceSwitcher = adCanvasModal.querySelector('.device-switcher'); if (deviceSwitcher) { deviceSwitcher.addEventListener('click', (e) => { if (e.target.classList.contains('device-btn')) { const [w, h] = e.target.dataset.size.split('x'); adCanvasPreviewArea.style.aspectRatio = `${w} / ${h}`; deviceSwitcher.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active-device')); e.target.classList.add('active-device'); } }); }}
     
-    if (runReportBtn) { runReportBtn.addEventListener('click', () => { const vizType = vizTypeSelect.value; const data = (document.getElementById('report-dimension').value === 'Date') ? reportData.date : reportData.campaign; reportVisuals.forEach(v => v.classList.remove('active-visual')); let container; switch (vizType) { case 'bar': activeBarChart = renderChart('bar-chart-canvas', activeBarChart, 'bar', data, 'Impressions'); container = document.getElementById('bar-chart-canvas')?.parentElement; break; case 'line': activeLineChart = renderChart('line-chart-canvas', activeLineChart, 'line', data, 'Impressions by Date'); container = document.getElementById('line-chart-canvas')?.parentElement; break; case 'pie': activePieChart = renderChart('pie-chart-canvas', activePieChart, 'pie', data, 'Impressions'); container = document.getElementById('pie-chart-canvas')?.parentElement; break; default: renderReportTable(data); container = reportTableContainer; break; } if (container) container.classList.add('active-visual'); }); }
-
     if (intelligencePanel) { openIntelligencePanelBtn.addEventListener('click', () => intelligencePanel.classList.add('open')); document.getElementById('close-intelligence-panel-btn').addEventListener('click', () => intelligencePanel.classList.remove('open')); const panelContent = document.getElementById('intelligence-panel-content'); if (panelContent) { panelContent.addEventListener('click', (e) => { if (e.target.classList.contains('action-btn') && e.target.textContent === 'Troubleshoot') { if (troubleshootModal) troubleshootModal.classList.remove('hidden'); } }); } }
     if (troubleshootModal) { troubleshootModal.querySelector('.close-btn').addEventListener('click', () => troubleshootModal.classList.add('hidden')); }
     if (campaignGoalSelect) { campaignGoalSelect.addEventListener('change', updateKpiOptions); }
@@ -340,17 +204,18 @@ const renderCombinedAudienceTable = (data) => {
     if(packageDetailsModal) { const container = document.getElementById('inventory-packages-container'); if(container){ container.addEventListener('click', (e) => { if (e.target.classList.contains('package-link')) { e.preventDefault(); packageDetailsModal.classList.remove('hidden'); } }); } packageDetailsModal.querySelector('.close-btn').addEventListener('click', () => packageDetailsModal.classList.add('hidden')); }
     if (featuredPublishersContainer) { featuredPublishersContainer.addEventListener('click', (e) => { const card = e.target.closest('.featured-card'); if (card && card.dataset.instant === 'true') { if (exchangeDetailsModal) exchangeDetailsModal.classList.remove('hidden'); } }); }
     if (exchangeDetailsModal) { exchangeDetailsModal.querySelector('.close-btn').addEventListener('click', () => exchangeDetailsModal.classList.add('hidden'));}
-
+    if (headerInsightsBtn) { headerInsightsBtn.addEventListener('click', () => { navLinks.forEach(l => { if (l.textContent.toLowerCase().includes('insights')) { l.querySelector('a').click(); } }); }); }
+    
     // ===== INITIALIZATION =====
     showView('campaign-view');
     renderCampaignList(campaignListData);
     renderInsertionOrderTable(insertionOrderData);
     renderLineItemTable(lineItemData);
     renderAudienceTable(audienceListData);
+    renderCombinedAudienceTable(combinedAudienceData);
     renderCreativeTable(creativeListData); 
     renderTeamMembers(teamMemberData);
     renderFormatGallery(formatGalleryData);
-    renderReportTable(reportData.campaign);
     renderIntelligencePanel(intelligenceAlertsData);
     updateKpiOptions();
     renderMyInventoryTable(myInventoryData);
@@ -358,8 +223,7 @@ const renderCombinedAudienceTable = (data) => {
     renderNegotiationsTable(negotiationsData);
     renderInventoryPackages(inventoryPackagesData);
     renderFeaturedPublishers(featuredPublishersData);
-setupAudienceBuilder();
-// At the very bottom, inside the DOMContentLoaded event listener
-setupCombinedAudienceBuilder();
-renderCombinedAudienceTable(combinedAudienceData);
+    renderOfflineReportsTable(offlineReportsData);
+    setupAudienceBuilder();
+    setupCombinedAudienceBuilder();
 });
