@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const kpiOptionsByGoal = {
         awareness: ["CPM", "Viewable %"],
         action: ["CTR", "CPA", "CPC"],
+        offline: ["CPA"],
         installs: ["CPIAVC", "CPA"]
     };
     const myInventoryData = [
@@ -136,16 +137,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerInsightsBtn = document.getElementById('header-insights-btn');
     const newOfflineReportBtn = document.getElementById('new-offline-report-btn');
     const reportBuilderModal = document.getElementById('report-builder-modal');
-
+    const demographicsModal = document.getElementById('demographics-modal-overlay');
+    const geographyModal = document.getElementById('geography-modal-overlay');
+    const languageModal = document.getElementById('language-modal-overlay');
+    
     const campaignGoalSelect = document.getElementById('campaign-goal');
     const campaignKpiSelect = document.getElementById('campaign-kpi');
+
+    const ioTargetingModals = {
+        'brand-safety-io': document.getElementById('brand-safety-io-modal'),
+        'environment-io': document.getElementById('environment-io-modal'),
+        'viewability-io': document.getElementById('viewability-io-modal'),
+        'apps-urls': document.getElementById('apps-urls-io-modal'),
+        'keywords': document.getElementById('keywords-io-modal'),
+        'categories-genres': document.getElementById('categories-genres-io-modal'),
+        'position': document.getElementById('position-io-modal'),
+        'audio-video': document.getElementById('audio-video-io-modal'),
+        'user-rewarded-content': document.getElementById('user-rewarded-content-io-modal'),
+    };
+
+    const liTargetingModals = {
+        'audience-lists': document.getElementById('li-audience-lists-modal'),
+        'day-time': document.getElementById('li-day-time-modal'),
+        'demographics': demographicsModal, // Reuse existing modal
+        'technology': document.getElementById('li-technology-modal'),
+        'geography': geographyModal, // Reuse existing modal
+        'language': languageModal, // Reuse existing modal
+        'keywords': ioTargetingModals['keywords'], // Reuse existing modal
+        'categories-genres': ioTargetingModals['categories-genres'], // Reuse existing modal
+        'apps-urls': ioTargetingModals['apps-urls'], // Reuse existing modal
+        'position': ioTargetingModals['position'], // Reuse existing modal
+    };
+
 
     // ===== HELPER FUNCTIONS =====
     const formatCurrency = (amount) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount);
     const formatNumber = (num) => (num >= 1000000) ? `${(num / 1000000).toFixed(1)}M` : (num >= 1000) ? `${(num / 1000).toFixed(0)}K` : new Intl.NumberFormat('en-US').format(num);
 
     // ===== RENDER FUNCTIONS =====
-    const renderCampaignList = (data) => { if (!campaignListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Campaign Name</th><th>Budget</th><th>Spent</th><th>KPI Goal</th><th>KPI Actual</th></tr></thead><tbody>`; data.forEach(c => { html += `<tr><td>${c.name}</td><td>${formatCurrency(c.budget)}</td><td>${formatCurrency(c.spent)}</td><td>${formatNumber(c.kpiGoal)}</td><td>${formatNumber(c.kpiActual)}</td></tr>`; }); html += `</tbody></table></div>`; campaignListContainer.innerHTML = html; };
+    const renderCampaignList = (data) => { if (!campaignListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Campaign Name</th><th>Budget</th><th>Spent</th><th>KPI Goal</th><th>KPI Actual</th></tr></thead><tbody>`; data.forEach(c => { html += `<tr><td>${c.name}</td><td>${formatCurrency(c.budget)}</td><td>${formatCurrency(c.spent)}</td><td>${c.kpiGoal}</td><td>${formatNumber(c.kpiActual)}</td></tr>`; }); html += `</tbody></table></div>`; campaignListContainer.innerHTML = html; };
     const renderInsertionOrderTable = (data) => { if (!ioListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>IO Name</th><th>Campaign</th><th>Status</th><th>Spend / Budget</th></tr></thead><tbody>`; data.forEach(io => { html += `<tr><td>${io.name}</td><td>${io.campaign}</td><td><span class="status status-${io.status.toLowerCase()}">${io.status}</span></td><td>${formatCurrency(io.spent)} / ${formatCurrency(io.budget)}</td></tr>`; }); html += `</tbody></table></div>`; ioListContainer.innerHTML = html; };
     const renderLineItemTable = (data) => { if (!liListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Line Item Name</th><th>Insertion Order</th><th>Type</th><th>Status</th></tr></thead><tbody>`; data.forEach(li => { html += `<tr><td>${li.name}</td><td>${li.insertionOrder}</td><td>${li.type}</td><td><span class="status status-${li.status.toLowerCase().replace(' ', '-')}">${li.status}</span></td></tr>`; }); html += `</tbody></table></div>`; liListContainer.innerHTML = html; };
     const renderAudienceTable = (data) => { if (!audienceListContainer) return; let html = `<div id="campaign-table-container"><table><thead><tr><th>Audience Name</th><th>Type</th><th>Source</th><th>Size (Users)</th></tr></thead><tbody>`; data.forEach(a => { html += `<tr><td>${a.name}</td><td>${a.type}</td><td>${a.source}</td><td><ul class="audience-size-list"><li><span class="media-type">Display:</span> <strong>${formatNumber(a.size.display)}</strong></li><li><span class="media-type">YouTube:</span> <strong>${formatNumber(a.size.youtube)}</strong></li><li><span class="media-type">Mobile:</span> <strong>${formatNumber(a.size.mobile)}</strong></li></ul></td></tr>`; }); html += `</tbody></table></div>`; audienceListContainer.innerHTML = html; };
@@ -167,7 +197,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const showView = (viewId) => { allViews.forEach(v => v.classList.add('hidden')); const vts = document.getElementById(viewId); if (vts) vts.classList.remove('hidden'); };
     if (sidebarNav) { sidebarNav.addEventListener('click', (event) => { event.preventDefault(); const link = event.target.closest('a'); if (!link) return; navLinks.forEach(l => l.classList.remove('active')); link.parentElement.classList.add('active'); const text = link.textContent.toLowerCase(); let viewId = 'campaign-view'; if (text.includes('audiences')) viewId = 'audiences-view'; else if (text.includes('creatives')) viewId = 'creatives-view'; else if (text.includes('inventory')) viewId = 'inventory-view'; else if (text.includes('insights')) viewId = 'insights-view'; showView(viewId); }); }
     
-    const setupTabs = (tabs, contents) => { if (!tabs || !contents.length) return; tabs.forEach(tab => tab.addEventListener('click', () => { const id = tab.dataset.tab; tabs.forEach(t => t.classList.remove('active-tab')); tab.classList.add('active-tab'); contents.forEach(c => c.classList.toggle('active-tab-content', c.id === `${id}-content` || c.id === `${id}-view`)); })); };
+    const setupTabs = (tabs, contents) => {
+        if (!tabs || !contents.length) return;
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+                tabs.forEach(t => t.classList.remove('active-tab'));
+                tab.classList.add('active-tab');
+                contents.forEach(content => {
+                    const isMatch = (content.id === `${tabId}-content` || content.id === tabId);
+                    content.classList.toggle('active-tab-content', isMatch);
+                });
+            });
+        });
+    };
+
     setupTabs(campaignTabs, campaignTabContents);
     setupTabs(audienceTabs, audienceTabContents);
     setupTabs(creativeTabs, creativeTabContents);
@@ -180,9 +224,276 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const setupModal = (btn, modal, onsubmit) => { if (!btn || !modal) return; const form = modal.querySelector('form'); const steps = modal.querySelectorAll('.form-step'); const nextBtn = modal.querySelector('[id*="-next-btn"]') || modal.querySelector('.create-btn'); const backBtn = modal.querySelector('[id*="-back-btn"]'); const submitBtn = modal.querySelector('[id*="-submit-btn"]') || (form ? form.querySelector('[type="submit"]') : null); let currentStep = 0; const openModal = () => { currentStep = 0; showStep(0); if (form) form.reset(); modal.classList.remove('hidden'); }; const closeModal = () => modal.classList.add('hidden'); const showStep = (i) => { if (steps && steps.length > 0) { steps.forEach((s, ix) => s.classList.toggle('active-step', ix === i)); } if (backBtn) backBtn.classList.toggle('hidden', i === 0); if (nextBtn && steps.length > 0) nextBtn.classList.toggle('hidden', i === steps.length - 1); if (submitBtn && steps.length > 0) submitBtn.classList.toggle('hidden', i !== steps.length - 1); }; btn.addEventListener('click', openModal); modal.querySelector('.close-btn').addEventListener('click', closeModal); if (nextBtn) nextBtn.addEventListener('click', () => { if (steps && currentStep < steps.length - 1) { currentStep++; showStep(currentStep); } }); if (backBtn) backBtn.addEventListener('click', () => { if (currentStep > 0) { currentStep--; showStep(currentStep); } }); if (form) form.addEventListener('submit', (e) => { e.preventDefault(); onsubmit(closeModal); }); };
     
-    setupModal(createCampaignBtn, campaignModal, (close) => { const nc = { name: campaignModal.querySelector('#campaign-name').value, budget: parseFloat(campaignModal.querySelector('#planned-spend').value) || 0, spent: 0, kpiGoal: 1, kpiActual: 0 }; campaignListData.push(nc); renderCampaignList(campaignListData); close(); });
-    setupModal(newIoBtn, ioModal, (close) => { const nio = { name: ioModal.querySelector('#line-item-name').value, campaign: "Pre-Diwali Brand Awareness", status: "Active", budget: 0, spent: 0 }; insertionOrderData.push(nio); renderInsertionOrderTable(insertionOrderData); alert("New Insertion Order & Line Item Created!"); close(); });
-    setupModal(newLineItemBtn, liModal, (close) => { const nli = { name: liModal.querySelector('#li-name').value, insertionOrder: "IO-01: Diwali Promo", type: liModal.querySelector('#li-type').value, status: "In Review" }; lineItemData.push(nli); renderLineItemTable(lineItemData); close(); });
+    const setupCampaignModal = () => {
+        if (!createCampaignBtn || !campaignModal) return;
+        createCampaignBtn.addEventListener('click', () => campaignModal.classList.remove('hidden'));
+        campaignModal.querySelector('.modal-header .close-btn').addEventListener('click', () => campaignModal.classList.add('hidden'));
+        campaignModal.querySelector('.form-navigation .secondary-btn').addEventListener('click', () => campaignModal.classList.add('hidden'));
+
+        const freqCapRadios = campaignModal.querySelectorAll('input[name="frequency-cap"]');
+        const freqCapSettings = campaignModal.querySelector('.freq-cap-settings');
+        if (freqCapRadios && freqCapSettings) {
+            freqCapRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    freqCapSettings.classList.toggle('hidden', e.target.value !== 'limit-exposure');
+                });
+            });
+        }
+
+        const targetingBtns = campaignModal.querySelectorAll('.edit-targeting-btn');
+        targetingBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetType = e.currentTarget.dataset.target;
+                if (targetType === 'demographics' && demographicsModal) demographicsModal.classList.remove('hidden');
+                else if (targetType === 'geography' && geographyModal) geographyModal.classList.remove('hidden');
+                else if (targetType === 'language' && languageModal) languageModal.classList.remove('hidden');
+            });
+        });
+
+        const form = document.getElementById('create-campaign-form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newCampaign = {
+                name: form.querySelector('#campaign-name').value,
+                budget: parseFloat(form.querySelector('#planned-spend').value) || 0,
+                spent: 0,
+                kpiGoal: form.querySelector('#campaign-kpi-value').value || 'N/A',
+                kpiActual: 0,
+            };
+            campaignListData.push(newCampaign);
+            renderCampaignList(campaignListData);
+            campaignModal.classList.add('hidden');
+            alert(`New campaign "${newCampaign.name}" created!`);
+            form.reset();
+        });
+    };
+
+    const setupTargetingSubModals = () => {
+        const modals = [demographicsModal, geographyModal, languageModal];
+        modals.forEach(modal => {
+            if (!modal) return;
+            modal.querySelectorAll('.close-btn').forEach(btn => btn.addEventListener('click', () => modal.classList.add('hidden')));
+            const applyBtn = modal.querySelector('[class*="apply-"]');
+            if(applyBtn) {
+                 applyBtn.addEventListener('click', () => {
+                    alert('Targeting settings applied!');
+                    modal.classList.add('hidden');
+                });
+            }
+        });
+    };
+    
+    const setupIoModal = () => {
+        if (!newIoBtn || !ioModal) return;
+        newIoBtn.addEventListener('click', () => ioModal.classList.remove('hidden'));
+        ioModal.querySelectorAll('.close-btn, .form-navigation .secondary-btn').forEach(btn => {
+            btn.addEventListener('click', () => ioModal.classList.add('hidden'));
+        });
+
+        const form = ioModal.querySelector('#create-io-form');
+
+        const addSegmentBtn = form.querySelector('#add-io-segment-btn');
+        const segmentsTbody = form.querySelector('#io-budget-segments-tbody');
+        if(addSegmentBtn && segmentsTbody) {
+            addSegmentBtn.addEventListener('click', () => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="number"></td>
+                    <td><input type="text"></td>
+                    <td><input type="date"></td>
+                    <td><input type="date"></td>
+                    <td><button type="button" class="icon-btn delete-segment-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button></td>
+                `;
+                segmentsTbody.appendChild(row);
+            });
+            segmentsTbody.addEventListener('click', (e) => {
+                if (e.target.closest('.delete-segment-btn')) {
+                    e.target.closest('tr').remove();
+                }
+            });
+        }
+        
+        const freqCapRadios = form.querySelectorAll('input[name="io-frequency-cap"]');
+        const freqCapSettings = form.querySelector('.io-freq-cap-settings');
+        if (freqCapRadios && freqCapSettings) {
+            freqCapRadios.forEach(radio => radio.addEventListener('change', e => freqCapSettings.classList.toggle('hidden', e.target.value !== 'limit-exposure')));
+        }
+        
+        const optimizationRadios = form.querySelectorAll('input[name="io-optimization"]');
+        const optimizationSubOptions = form.querySelector('.optimization-sub-options');
+        if(optimizationRadios && optimizationSubOptions) {
+            optimizationRadios.forEach(radio => radio.addEventListener('change', (e) => {
+                const subRadios = optimizationSubOptions.querySelectorAll('input');
+                if (e.target.value === 'auto-io-level') {
+                    subRadios.forEach(r => r.disabled = false);
+                } else {
+                    subRadios.forEach(r => r.disabled = true);
+                }
+            }));
+        }
+
+        const editTargetingBtns = form.querySelectorAll('.edit-targeting-btn');
+        const additionalTargetingSelect = form.querySelector('#additional-targeting');
+        const openTargetingModal = (target) => {
+            const modal = ioTargetingModals[target];
+            if(modal) modal.classList.remove('hidden');
+        };
+        editTargetingBtns.forEach(btn => btn.addEventListener('click', e => openTargetingModal(e.currentTarget.dataset.target)));
+        if (additionalTargetingSelect) {
+            additionalTargetingSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    openTargetingModal(e.target.value);
+                    e.target.value = "";
+                }
+            });
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            let totalBudget = 0;
+            segmentsTbody.querySelectorAll('tr').forEach(row => {
+                const budgetInput = row.querySelector('input[type="number"]');
+                if (budgetInput && budgetInput.value) {
+                    totalBudget += parseFloat(budgetInput.value);
+                }
+            });
+
+            const newIO = {
+                name: form.querySelector('#io-name').value,
+                campaign: campaignListData[0]?.name || "Unassigned",
+                status: "Active",
+                budget: totalBudget,
+                spent: 0
+            };
+            insertionOrderData.push(newIO);
+            renderInsertionOrderTable(insertionOrderData);
+            ioModal.classList.add('hidden');
+            alert(`New Insertion Order "${newIO.name}" created!`);
+        });
+    };
+
+    const setupIoTargetingSubModals = () => {
+        for (const key in ioTargetingModals) {
+            const modal = ioTargetingModals[key];
+            if (modal) {
+                modal.querySelectorAll('.close-btn, [class*="apply-"]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (btn.classList.contains('create-btn')) {
+                            alert('Targeting settings applied!');
+                        }
+                        modal.classList.add('hidden');
+                    });
+                });
+            }
+        }
+    };
+
+    const setupLiModal = () => {
+        if (!newLineItemBtn || !liModal) return;
+
+        const form = liModal.querySelector('#create-li-form');
+        newLineItemBtn.addEventListener('click', () => liModal.classList.remove('hidden'));
+        liModal.querySelectorAll('.close-btn, .form-navigation .secondary-btn').forEach(btn => {
+            btn.addEventListener('click', () => liModal.classList.add('hidden'));
+        });
+
+        // Toggle visibility of custom settings
+        const flightRadios = form.querySelectorAll('input[name="li-flight-dates"]');
+        const customDatesDiv = form.querySelector('.li-custom-dates');
+        flightRadios.forEach(radio => radio.addEventListener('change', e => customDatesDiv.classList.toggle('hidden', e.target.value !== 'custom')));
+
+        const budgetRadios = form.querySelectorAll('input[name="li-budget"]');
+        const budgetSettingsDiv = form.querySelector('.li-budget-settings');
+        budgetRadios.forEach(radio => radio.addEventListener('change', e => budgetSettingsDiv.classList.toggle('hidden', e.target.value !== 'li')));
+        
+        const freqCapCheckbox = form.querySelector('#li-override-freq-cap');
+        const freqCapSettings = form.querySelector('.li-freq-cap-settings');
+        if(freqCapCheckbox) freqCapCheckbox.addEventListener('change', e => freqCapSettings.classList.toggle('hidden', !e.target.checked));
+
+        // Dynamic Targeting
+        const targetingGroup = form.querySelector('#li-targeting-group');
+        const addTargetingSelect = form.querySelector('#li-additional-targeting');
+        const targetingRowTemplates = {
+            'audience-lists': { label: 'Audience lists', value: '0 lists' },
+            'day-time': { label: 'Day & time', value: 'All days and hours' },
+            'demographics': { label: 'Demographics', value: 'All' },
+            'technology': { label: 'Technology', value: 'All' },
+            'geography': { label: 'Geography', value: 'All' },
+            'language': { label: 'Language', value: 'All' },
+            'keywords': { label: 'Keywords', value: 'Not set' },
+            'categories-genres': { label: 'Categories & genres', value: 'All' },
+            'apps-urls': { label: 'Apps & URLs', value: 'Not set' },
+            'position': { label: 'Position', value: 'All' },
+        };
+
+        const addLiTargetingRow = (type) => {
+            if (!targetingRowTemplates[type]) return;
+            const template = targetingRowTemplates[type];
+            const row = document.createElement('div');
+            row.className = 'targeting-row';
+            row.dataset.targetingType = type;
+            row.innerHTML = `
+                <span class="targeting-label">${template.label}</span>
+                <span class="targeting-value">${template.value}</span>
+                <button type="button" class="icon-btn edit-li-targeting-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
+            `;
+            targetingGroup.appendChild(row);
+        };
+
+        addTargetingSelect.addEventListener('change', (e) => {
+            const type = e.target.value;
+            if (!type) return;
+            addLiTargetingRow(type);
+            e.target.querySelector(`option[value="${type}"]`).disabled = true;
+            e.target.value = '';
+        });
+
+        targetingGroup.addEventListener('click', (e) => {
+            const editBtn = e.target.closest('.edit-li-targeting-btn');
+            if (editBtn) {
+                const row = editBtn.closest('.targeting-row');
+                const type = row.dataset.targetingType;
+                const modalToOpen = liTargetingModals[type];
+                if (modalToOpen) {
+                    modalToOpen.classList.remove('hidden');
+                } else {
+                    alert(`Targeting for "${type}" is not yet implemented.`);
+                }
+            }
+        });
+
+        // Form Submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newLI = {
+                name: form.querySelector('#li-name').value,
+                insertionOrder: insertionOrderData[0]?.name || 'Unassigned',
+                type: 'Display', 
+                status: 'Active'
+            };
+            lineItemData.push(newLI);
+            renderLineItemTable(lineItemData);
+            liModal.classList.add('hidden');
+            alert(`New Line Item "${newLI.name}" created!`);
+        });
+    };
+
+    const setupLiTargetingSubModals = () => {
+        for (const key in liTargetingModals) {
+            const modal = liTargetingModals[key];
+            if (modal) {
+                modal.querySelectorAll('.close-btn, [class*="apply-"]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (btn.classList.contains('create-btn')) {
+                            alert('Targeting settings applied!');
+                        }
+                        modal.classList.add('hidden');
+                    });
+                });
+            }
+        }
+    };
+    
     setupModal(newUserBtn, userModal, (close) => { alert('New user added!'); close(); });
     setupModal(requestProposalBtn, rfpModal, (close) => { alert('RFP Sent!'); close(); });
     setupModal(compareBtn, compareModal, () => {});
@@ -224,6 +535,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderInventoryPackages(inventoryPackagesData);
     renderFeaturedPublishers(featuredPublishersData);
     renderOfflineReportsTable(offlineReportsData);
+    setupCampaignModal();
+    setupIoModal();
+    setupLiModal();
+    setupTargetingSubModals();
+    setupIoTargetingSubModals();
+    setupLiTargetingSubModals();
     setupAudienceBuilder();
     setupCombinedAudienceBuilder();
 });
