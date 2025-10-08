@@ -232,9 +232,621 @@
         </div>
     </div>
 
-    <div id="campaign-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-campaign-form"><div class="modal-header"><h3>Create New Campaign</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Step 1: Goal & Settings</h4><div class="form-group"><label for="campaign-name">Campaign Name</label><input type="text" id="campaign-name" required placeholder="e.g., Q4 Diwali Sale"></div><div class="form-group"><label for="campaign-goal">Goal</label><select id="campaign-goal"><option value="awareness">Raise awareness</option><option value="action">Drive online action</option><option value="installs">Drive app installs</option></select></div><div class="form-group"><label for="campaign-kpi">Key Performance Indicator (KPI)</label><select id="campaign-kpi"></select></div><div class="form-group"><label for="planned-spend">Planned Spend (Optional)</label><input type="number" id="planned-spend" placeholder="e.g., 500000"></div><div class="form-group"><label for="start-date">Planned Dates</label><div class="date-group"><input type="date" id="start-date" required><input type="date" id="end-date" required></div></div></div><div class="form-step"><h4>Step 2: Creatives & Frequency</h4><div class="form-group"><label for="creative-type">Creative Type</label><select id="creative-type"><option>Display</option><option>Video</option><option>Audio</option></select></div><div class="form-group"><label>Campaign-Level Frequency Cap</label><div class="freq-cap-group"><input type="number" id="freq-cap-impressions" value="3"><span>impressions per</span><input type="number" id="freq-cap-duration" value="24"><select id="freq-cap-period"><option>Hours</option><option>Days</option><option>Weeks</option></select></div></div><div class="info-box"><p>Frequency caps work across multiple insertion orders.</p></div></div><div class="form-step"><h4>Step 3: Default Targeting</h4><div class="form-group"><label>Inventory Source</label><select id="inventory-source"><option>Public Inventory</option><option>Deals and Auction Packages</option></select></div><div class="form-group"><label>Geography</label><input type="text" placeholder="e.g., Mumbai, Maharashtra"></div><div class="form-group"><label>Brand Safety</label><select><option>Block all sensitive categories</option><option>Apply limited restrictions</option></select></div></div><div class="form-navigation"><button type="button" id="back-btn" class="secondary-btn hidden">Back</button><button type="button" id="next-btn" class="create-btn">Next</button><button type="submit" id="submit-btn" class="create-btn hidden">Create Campaign</button></div></form></div></div>
-    <div id="io-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-io-form"><div class="modal-header"><h3>Create New Insertion Order</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Choose Insertion Order Type</h4><div class="io-type-selection"><div class="io-type-card"><h5>Real-time bidding</h5><p>Buy impressions via auctions.</p></div><div class="io-type-card"><h5>Story</h5><p>Tell a story across screens.</p></div></div></div><div class="form-step"><h4>Add New Line Item</h4><div class="form-group"><label for="line-item-name">Line Item Name</label><input type="text" id="line-item-name" required placeholder="e.g., Q4 Display Prospecting"></div><div class="form-group"><label for="line-item-type">Line Item Type</label><select id="line-item-type"><option>Display</option><option>Video</option><option>TrueView</option><option>Mobile app install</option></select></div></div><div class="form-navigation"><button type="button" id="io-back-btn" class="secondary-btn hidden">Back</button><button type="button" id="io-next-btn" class="create-btn">Next</button><button type="submit" id="io-submit-btn" class="create-btn hidden">Create</button></div></form></div></div>
-    <div id="li-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-li-form"><div class="modal-header"><h3>Create New Line Item</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><h4>Step 1: Type & Details</h4><div class="form-group"><label for="li-name">Line Item Name</label><input type="text" id="li-name" required placeholder="e.g., Diwali Video Prospecting"></div><div class="form-group"><label>Line Item Type</label><select id="li-type"><option>Display</option><option>Video</option><option>TrueView</option><option>Mobile app install</option></select></div></div><div class="form-step"><h4>Step 2: Bidding</h4><div class="form-group"><label for="bidding-strategy">Bidding Strategy</label><select id="bidding-strategy"><option>Automated Bidding</option><option>Fixed Bid</option><option>Target CPA</option></select></div><div class="info-box"><p><strong>Automated bidding:</strong> Use an automated bid strategy to have DV360 dynamically change your bid based on the likelihood of a conversion.</p></div></div><div class="form-navigation"><button type="button" id="li-back-btn" class="secondary-btn hidden">Back</button><button type="button" id="li-next-btn" class="create-btn">Next</button><button type="submit" id="li-submit-btn" class="create-btn hidden">Create</button></div></form></div></div>
+    <div id="campaign-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <form id="create-campaign-form">
+                <div class="modal-header">
+                    <h3>New campaign</h3>
+                    <button type="button" class="close-btn">&times;</button>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="campaign-name">Campaign name</label>
+                        <div class="input-with-toggle">
+                            <input type="text" id="campaign-name" required placeholder="Enter name">
+                            <div class="status-toggle">
+                                <span>Active</span>
+                                <input type="checkbox" id="campaign-status" class="toggle-input" checked>
+                                <label for="campaign-status" class="toggle-switch"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="form-hint">Copy settings from an existing campaign</p>
+                </div>
+                
+                <hr>
+
+                <div class="form-section">
+                    <h4>Overall campaign goal</h4>
+                    <div class="form-group">
+                        <select id="campaign-goal">
+                            <option value="awareness">Raise awareness of my brand or product</option>
+                            <option value="action">Drive online action or visits</option>
+                            <option value="offline">Drive offline or in-store sales</option>
+                            <option value="installs">Drive app installs or engagements</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>KPI you expect to use</h4>
+                    <div class="form-group">
+                        <select id="campaign-kpi">
+                            </select>
+                        <input type="number" id="campaign-kpi-value" placeholder="AS" style="width: 80px; margin-left: 10px;">
+                        <span style="margin-left: 5px;">INR</span>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h4>Creative type you expect to use</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="creative-type" value="Display" checked> Display</label>
+                        <label><input type="checkbox" name="creative-type" value="Video"> Video</label>
+                        <label><input type="checkbox" name="creative-type" value="Audio"> Audio</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Planned spend (Optional)</h4>
+                    <div class="form-group">
+                        <input type="number" id="planned-spend" placeholder="AS">
+                        <span style="margin-left: 5px;">INR</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Planned dates</h4>
+                    <div class="date-group">
+                        <input type="date" id="start-date" required>
+                        <input type="date" id="end-date" > <span class="form-hint">(optional)</span>
+                    </div>
+                    <p class="form-hint">Additional budget details</p>
+                    <div class="additional-budget-details">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Budget (required)</th>
+                                    <th>Name (required)</th>
+                                    <th>Start date</th>
+                                    <th>End date</th>
+                                    <th>Invoice grouping ID</th>
+                                    <th>External budget ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td><input type="number" value="100"></td>
+                                    <td><input type="text" value="Budget 1"></td>
+                                    <td><input type="date" value="2024-12-20"></td>
+                                    <td><input type="date" value="2024-12-31"></td>
+                                    <td><input type="text"></td>
+                                    <td><input type="text"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Frequency cap</h4>
+                    <div class="radio-group">
+                        <label><input type="radio" name="frequency-cap" value="no-limit" checked> No limit</label>
+                        <label><input type="radio" name="frequency-cap" value="limit-exposure"> Limit frequency to</label>
+                    </div>
+                    <div class="freq-cap-settings hidden">
+                        <input type="number" id="freq-cap-impressions" value="5">
+                        <span>exposures per</span>
+                        <input type="number" id="freq-cap-duration" value="1">
+                        <select id="freq-cap-period">
+                            <option>Hours</option>
+                            <option>Days</option>
+                            <option>Weeks</option>
+                            <option>Months</option>
+                            <option>Lifetime of this campaign</option>
+                        </select>
+                        <p class="form-hint">You can also set specific frequency caps on each insertion order and line item in this campaign.</p>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Inventory source</h4>
+                    <p class="form-hint">New insertion orders and line items in this campaign will inherit these settings.</p>
+                    <div class="form-group">
+                        <label for="quality">Quality</label>
+                        <select id="quality">
+                            <option>Authorized Direct Sellers</option>
+                            <option>Authorized Direct Sellers and Resellers</option>
+                            <option>Authorized and Non-Participating Publishers</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="inventory-targeting" value="public-inventory" checked> Public Inventory</label>
+                        <p class="form-hint">56 Exchanges and 0 Subexchanges are selected</p>
+                        <p class="targeting-new-exchanges">Targeting new exchanges</p>
+                        <p class="form-hint">App mediation partners give Display & Video 360 advertisers more control and access to mobile app inventory. Impressions will not serve until add-on fee terms are reviewed and accepted. <a href="#">Learn more</a></p>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" name="inventory-targeting" value="deals-packages"> Deals and Inventory Packages</label>
+                        <p class="form-hint">0 deals and inventory packages selected</p>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" name="inventory-targeting" value="deal-groups"> Deal groups and preferred deal groups</label>
+                        <p class="form-hint">No inventory groups selected</p>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Targeting</h4>
+                    <p class="form-hint">New insertion orders and line items in this campaign will inherit these settings.</p>
+                    <div class="targeting-group">
+                        <div class="targeting-row">
+                            <span class="targeting-label">Demographics</span>
+                            <span class="targeting-value">All genders, ages, parental statuses and household incomes</span>
+                            <button type="button" class="icon-btn edit-targeting-btn" data-target="demographics"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
+                        </div>
+                        <div class="targeting-row">
+                            <span class="targeting-label">Geography</span>
+                            <span class="targeting-value">All locations</span>
+                            <button type="button" class="icon-btn edit-targeting-btn" data-target="geography"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
+                        </div>
+                        <div class="targeting-row">
+                            <span class="targeting-label">Language</span>
+                            <span class="targeting-value">All languages</span>
+                            <button type="button" class="icon-btn edit-targeting-btn" data-target="language"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Brand safety</h4>
+                    <div class="form-group">
+                        <label for="digital-content-labels">Digital Content Label exclusions</label>
+                        <select id="digital-content-labels">
+                            <option>Not set</option>
+                            <option>DL-MA</option>
+                            <option>DL-G</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sensitive category exclusions</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox"> Downloads & sharing</label>
+                            <label><input type="checkbox"> Gambling</label>
+                            <label><input type="checkbox"> Gross</label>
+                            <label><input type="checkbox"> Sensitive social issues</label>
+                            <label><input type="checkbox"> Shocking</label>
+                            <label><input type="checkbox"> Suggestive</label>
+                            <label><input type="checkbox"> Tobacco</label>
+                            <button type="button" class="show-more-filters">Show 12 more</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Environment</h4>
+                    <p class="form-hint">Include the following environments</p>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="env-web" checked> Web</label>
+                        <label><input type="checkbox" id="env-app"> App</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Additional targeting</h4>
+                    <p class="form-hint">Add more details to improve your recommendations.</p>
+                    <div class="form-group">
+                        <label for="landing-page-url">Landing page URLs</label>
+                        <input type="url" id="landing-page-url" placeholder="Add another url (optional)">
+                    </div>
+                    <div class="form-group">
+                        <label for="keywords">Keywords</label>
+                        <input type="text" id="keywords" placeholder="Add keywords separated by a comma (optional)">
+                        <p class="form-hint">Enter up to 5 keywords to help improve recommendations</p>
+                    </div>
+                </div>
+
+                <div class="form-navigation">
+                    <button type="button" class="secondary-btn">Cancel</button>
+                    <button type="submit" class="create-btn">Create Campaign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="io-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <form id="create-io-form">
+                <div class="modal-header">
+                    <h3>New Insertion Order</h3>
+                    <button type="button" class="close-btn">&times;</button>
+                </div>
+
+                <div class="form-section">
+                    <h4>Select a type</h4>
+                    <div class="radio-group">
+                        <label><input type="radio" name="io-type" value="standard" checked> Standard <span class="form-hint">Open auction (line item bidding on Display & Video 360)</span></label>
+                        <label><input type="radio" name="io-type" value="ott-ctv"> Connected TV and OTT streaming <span class="form-hint">TV inventory served over the top streaming devices</span></label>
+                        <label><input type="radio" name="io-type" value="digital-out-of-home"> Digital out of home <span class="form-hint">Digital out of home ads that serve on billboards, bus stations, airports etc.</span></label>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="form-section">
+                    <h4>Select an objective</h4>
+                    <p class="form-hint">The objective you pick determines the key performance indicators (KPIs), bid strategies and line item types that are available in the insertion orders. <a href="#">You can change insertion order objective from brand awareness, click, conversion, or custom to "insertion order without objective" after creation in the insertion order details page. Learn more</a></p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="io-objective" value="brand-awareness" checked> Brand awareness</label>
+                        <label><input type="radio" name="io-objective" value="clicks"> Clicks</label>
+                        <label><input type="radio" name="io-objective" value="conversions"> Conversions</label>
+                        <label><input type="radio" name="io-objective" value="custom"> Custom</label>
+                        <label><input type="radio" name="io-objective" value="no-objective"> Insertion order without objective</label>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="form-section">
+                    <h4>Insertion order name</h4>
+                    <div class="form-group">
+                        <input type="text" id="io-name" required placeholder="Enter name">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Budget</h4>
+                    <p class="form-hint">Budget and pacing depend on both insertion order and line item settings.</p>
+                    <div class="form-group">
+                        <label for="io-budget-type">Select your budget type</label>
+                        <select id="io-budget-type">
+                            <option value="inr" selected>INR</option>
+                            <option value="impressions">Impressions</option>
+                        </select>
+                    </div>
+                    <p class="form-hint">Specify this insertion order’s flight dates and budget segments</p>
+                    <div class="budget-segments-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Budget</th>
+                                    <th>Description</th>
+                                    <th>Start date</th>
+                                    <th>End date</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="io-budget-segments-tbody">
+                                <tr>
+                                    <td><input type="number" value="3000"></td>
+                                    <td><input type="text" value="Budget 1"></td>
+                                    <td><input type="date" value="2025-01-25"></td>
+                                    <td><input type="date" value="2025-01-31"></td>
+                                    <td><button type="button" class="icon-btn delete-segment-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" id="add-io-segment-btn" class="secondary-btn">Add segments</button>
+                        <p class="budget-warning hidden" style="color: var(--status-underspending-text); margin-top: 10px;">Your campaign’s planned budget couldn’t be loaded, so it’s possible this budget segment will exceed your planned campaign budget</p>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Pacing</h4>
+                    <p class="form-hint">How do you want to spend the flight budget?</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="io-pacing" value="flight" checked> Flight (Recommended)</label>
+                        <label><input type="radio" name="io-pacing" value="ahead"> Ahead</label>
+                        <label><input type="radio" name="io-pacing" value="even"> Even</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>KPI</h4>
+                    <p class="form-hint">What KPI do you want to use for your insertion order?</p>
+                    <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                        <select id="io-kpi-select" style="flex-grow: 1;">
+                            <option>Cost per thousand viewable impressions (vCPM)</option>
+                            <option>Viewability %</option>
+                            <option>Cost per impression audible and visible at completion (OPAIC)</option>
+                            <option>Cost per YouTube view (CPV)</option>
+                            <option>YouTube view rate (VTR)</option>
+                            <option>Completion rate (Audio)</option>
+                            <option>Completion rate (Video)</option>
+                            <option>Cost per complete audio listen (CPCL)</option>
+                            <option>Cost per complete video view (CPCV)</option>
+                            <option>Cost per ten seconds video (CP10sV)</option>
+                            <option>Custom impressions value / cost</option>
+                        </select>
+                        <input type="number" id="io-kpi-value" placeholder="40" style="width: 80px;">
+                        <span>INR</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Optimization</h4>
+                    <p class="form-hint">How would you like to optimize?</p>
+                    <div class="radio-group" style="flex-direction: column; align-items: flex-start; gap: 15px;">
+                        <div class="radio-option-block">
+                            <label><input type="radio" name="io-optimization" value="auto-io-level" checked> Automate bid & budget at insertion order level</label>
+                            <span class="form-hint" style="padding-left: 25px;">Allow system to automatically adjust bids and shift budget to better performing line items.</span>
+                            <div class="optimization-sub-options">
+                                <label><input type="radio" name="io-optimization-type" value="max-viewable" checked> Maximize viewable impressions</label>
+                                <label><input type="radio" name="io-optimization-type" value="maximize-budget"> While prioritizing spending my full budget (Recommended)</label>
+                                <label><input type="radio" name="io-optimization-type" value="optimize-towards"> Optimized towards</label>
+                            </div>
+                        </div>
+                        <div class="radio-option-block">
+                            <label><input type="radio" name="io-optimization" value="control-li-level"> Control bid and budget at the line item level</label>
+                             <span class="form-hint" style="padding-left: 25px;">Automatically optimize your budget allocation.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Frequency cap</h4>
+                    <div class="radio-group">
+                        <label><input type="radio" name="io-frequency-cap" value="no-limit" checked> No limit</label>
+                        <label><input type="radio" name="io-frequency-cap" value="limit-exposure"> Limit frequency to</label>
+                    </div>
+                    <div class="io-freq-cap-settings hidden">
+                        <input type="number" id="io-freq-cap-impressions" value="5">
+                        <span>exposures per</span>
+                        <input type="number" id="io-freq-cap-duration" value="1">
+                        <select id="io-freq-cap-period">
+                            <option>Hours</option>
+                            <option>Days</option>
+                            <option>Weeks</option>
+                            <option>Months</option>
+                            <option>Lifetime</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Inventory source</h4>
+                    <p class="form-hint">New line items in this insertion order will inherit these settings.</p>
+                    <div class="form-group">
+                        <label for="io-quality">Quality</label>
+                        <select id="io-quality">
+                            <option>Authorized Direct Sellers and Resellers</option>
+                            <option>Authorized Direct Sellers</option>
+                            <option>Authorized and Non-Participating Publishers</option>
+                        </select>
+                    </div>
+                     <div class="inventory-option-row">
+                        <div class="inventory-option-label">
+                            <label for="io-public-inventory-checkbox">Public Inventory</label>
+                             <p class="form-hint">56 Exchanges and 0 Subexchanges are selected</p>
+                        </div>
+                         <input type="checkbox" id="io-public-inventory-checkbox" name="io-inventory-targeting" value="public-inventory" checked>
+                    </div>
+                    <div class="inventory-option-row">
+                        <div class="inventory-option-label">
+                            <label for="io-deals-packages-checkbox">Deals and Inventory Packages</label>
+                            <button type="button" class="icon-btn edit-io-inventory-btn" data-target="deals-packages"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
+                            <p class="form-hint">0 deals and inventory packages selected</p>
+                        </div>
+                        <input type="checkbox" id="io-deals-packages-checkbox" name="io-inventory-targeting" value="deals-packages">
+                    </div>
+                    <div class="inventory-option-row">
+                        <div class="inventory-option-label">
+                            <label for="io-deal-groups-checkbox">Deal groups and preferred deal groups</label>
+                            <button type="button" class="icon-btn edit-io-inventory-btn" data-target="deal-groups"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
+                            <p class="form-hint">No inventory groups selected</p>
+                        </div>
+                        <input type="checkbox" id="io-deal-groups-checkbox" name="io-inventory-targeting" value="deal-groups">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Targeting</h4>
+                    <p class="form-hint">New line items in this insertion order will inherit these settings. Targeting set on insertion orders doesn't apply to YouTube & partners line items.</p>
+                    <div class="targeting-group">
+                        <div class="targeting-row">
+                            <span class="targeting-label">Brand Safety</span>
+                            <span class="targeting-value">Digital Content Label exclusions: 2 items excluded<br>Sensitive category exclusions: 9 items excluded<br>Other verification services: 0 items selected</span>
+                            <button type="button" class="icon-btn edit-targeting-btn" data-target="brand-safety-io"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
+                        </div>
+                        <div class="targeting-row">
+                            <span class="targeting-label">Environment</span>
+                            <span class="targeting-value">Include the following environments: Web, App</span>
+                            <button type="button" class="icon-btn edit-targeting-btn" data-target="environment-io"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
+                        </div>
+                        <div class="targeting-row">
+                            <span class="targeting-label">Viewability</span>
+                            <span class="targeting-value">Auto bid doesn't support targeting for viewability: Open Measurement</span>
+                            <button type="button" class="icon-btn edit-targeting-btn" data-target="viewability-io"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="additional-targeting">Additional targeting</label>
+                        <select id="additional-targeting">
+                            <option value="">Choose a category</option>
+                            <option value="apps-urls">Apps & URLs</option>
+                            <option value="keywords">Keywords</option>
+                            <option value="categories-genres">Categories & genres</option>
+                            <option value="position">Position</option>
+                            <option value="language">Language</option>
+                            <option value="audio-video">Audio & Video</option>
+                            <option value="user-rewarded-content">User rewarded content</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-navigation">
+                    <button type="button" class="secondary-btn">Cancel</button>
+                    <button type="submit" class="create-btn">Create Insertion Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="li-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <form id="create-li-form">
+                 <div class="modal-header">
+                    <h3>New Display Line Item</h3>
+                    <button type="button" class="close-btn">&times;</button>
+                </div>
+                
+                <div class="form-section">
+                     <div class="form-group">
+                        <label for="li-name">Name</label>
+                        <div class="input-with-toggle">
+                            <input type="text" id="li-name" required placeholder="Enter name for your line item">
+                            <div class="status-toggle">
+                                <span>Active</span>
+                                <input type="checkbox" id="li-status" class="toggle-input" checked>
+                                <label for="li-status" class="toggle-switch"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="form-section">
+                    <h4>Flight dates</h4>
+                     <div class="radio-group">
+                        <label><input type="radio" name="li-flight-dates" value="same" checked> Use same dates as insertion order</label>
+                        <label><input type="radio" name="li-flight-dates" value="custom"> Set custom dates</label>
+                    </div>
+                    <div class="li-custom-dates hidden" style="margin-top: 10px; display: flex; gap: 10px;">
+                        <input type="date" id="li-start-date">
+                        <input type="date" id="li-end-date">
+                    </div>
+                </div>
+                <hr>
+
+                 <div class="form-section">
+                    <h4>Budget and pacing</h4>
+                     <div class="radio-group" style="flex-direction: column; align-items: flex-start;">
+                        <label><input type="radio" name="li-budget" value="io" checked> Budget is set at the insertion order level</label>
+                        <label><input type="radio" name="li-budget" value="li"> Set the budget and pacing for this line item</label>
+                    </div>
+                    <div class="li-budget-settings hidden" style="margin-top: 10px;">
+                        <div class="form-group" style="display: flex; gap: 20px;">
+                            <div>
+                                <label>Budget</label>
+                                <div style="display: flex; align-items: center;">
+                                    <input type="number" placeholder="1000" style="width: 120px;">
+                                    <select style="width: 120px;">
+                                        <option>Impressions</option>
+                                        <option selected>Currency (INR)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label>Pacing</label>
+                                <select>
+                                    <option>Flight</option>
+                                    <option>Ahead</option>
+                                    <option>Even</option>
+                                    <option>ASAP</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="form-section">
+                    <h4>Bid strategy</h4>
+                    <div class="form-group">
+                        <label>Goal</label>
+                        <select>
+                            <option>Maximize clicks</option>
+                            <option>Maximize conversions</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="li-bid-strategy">Bidding</label>
+                        <select id="li-bid-strategy">
+                            <option value="fixed">Fixed bid</option>
+                            <option value="automated">Automated bidding</option>
+                        </select>
+                    </div>
+                     <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                        <label style="margin-bottom: 0;">Fixed Bid</label>
+                        <input type="number" placeholder="1.00" style="width: 100px;">
+                        <span>CPM</span>
+                    </div>
+                </div>
+                <hr>
+                
+                 <div class="form-section">
+                    <h4>Frequency cap</h4>
+                     <p class="form-hint">Inheriting insertion order's frequency cap</p>
+                    <label style="margin-top: 10px;"><input type="checkbox" id="li-override-freq-cap"> Override insertion order's frequency cap</label>
+                    <div class="li-freq-cap-settings hidden" style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
+                        <input type="number" value="5">
+                        <span>exposures per</span>
+                        <select>
+                            <option>Week</option>
+                            <option>Day</option>
+                            <option>Month</option>
+                        </select>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="form-section">
+                    <h4>Targeting</h4>
+                    <div class="targeting-group" id="li-targeting-group">
+                        </div>
+                     <div class="form-group" style="margin-top: 20px;">
+                        <label for="li-additional-targeting">Add targeting</label>
+                        <select id="li-additional-targeting">
+                            <option value="">Choose a targeting option</option>
+                            <option value="audience-lists">Audience lists</option>
+                            <option value="day-time">Day & time</option>
+                            <option value="demographics">Demographics</option>
+                            <option value="technology">Technology</option>
+                            <option value="geography">Geography</option>
+                            <option value="language">Language</option>
+                            <option value="keywords">Keywords</option>
+                            <option value="categories-genres">Categories & genres</option>
+                            <option value="apps-urls">Apps & URLs</option>
+                            <option value="position">Position</option>
+                        </select>
+                    </div>
+                </div>
+                <hr>
+                
+                <div class="form-section">
+                    <h4>Creatives</h4>
+                    <button type="button" class="secondary-btn" id="assign-creatives-btn">Assign creatives</button>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label>Optimize rotation</label>
+                         <select>
+                            <option>Optimized</option>
+                            <option>Evenly</option>
+                            <option>Manual</option>
+                        </select>
+                    </div>
+                    <div id="assigned-creatives-list" style="margin-top: 10px;">
+                        <p class="form-hint">No creatives assigned.</p>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="form-section">
+                    <h4>Conversion tracking</h4>
+                    <button type="button" class="secondary-btn" id="add-floodlight-btn">Add Floodlight group</button>
+                    <div id="floodlight-list" style="margin-top: 10px;">
+                        <p class="form-hint">No floodlight activities selected.</p>
+                    </div>
+                </div>
+                
+                 <div class="form-navigation" style="justify-content: flex-end;">
+                    <button type="button" class="secondary-btn close-btn">Cancel</button>
+                    <button type="submit" class="create-btn">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="ad-canvas-modal-overlay" class="modal-overlay hidden"><div class="modal-content" style="max-width: 900px;"><div class="modal-header"><h3 id="ad-canvas-title">Ad Canvas Preview</h3><button type="button" class="close-btn">&times;</button></div><div class="ad-canvas-body"><div class="ad-canvas-preview-area"><img id="ad-canvas-image" src="" alt="Creative Preview"></div><div class="ad-canvas-controls"><h4>Device Preview</h4><div class="device-switcher"><button class="device-btn active-device" data-size="300x250">Desktop</button><button class="device-btn" data-size="320x480">Mobile</button><button class="device-btn" data-size="768x1024">Tablet</button></div></div></div></div></div>
     <div id="user-modal-overlay" class="modal-overlay hidden"><div class="modal-content"><form id="create-user-form"><div class="modal-header"><h3>Add New User</h3><button type="button" class="close-btn">&times;</button></div><div class="form-step active-step"><div class="form-group"><label for="user-email">User Email</label><input type="email" id="user-email" required placeholder="name@example.com"></div><div class="form-group"><label for="user-role">Assign Role</label><select id="user-role"><option>Creative Admin</option><option>Creative User</option><option>Media Planner</option><option>Brand Manager</option></select></div></div><div class="form-navigation"><button type="submit" class="create-btn">Save</button></div></form></div></div>
     <aside id="intelligence-panel" class="intelligence-panel"><div class="panel-header"><h3>Intelligence</h3><button id="close-intelligence-panel-btn" class="close-btn">&times;</button></div><div id="intelligence-panel-content" class="panel-content"></div></aside>
@@ -434,6 +1046,617 @@
                     <button type="submit" class="create-btn">Save & Run</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div id="demographics-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3>Demographics</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div class="targeting-grid">
+                <div class="targeting-column">
+                    <h4>Gender</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" checked> Male</label>
+                        <label><input type="checkbox" checked> Female</label>
+                        <label><input type="checkbox" checked> Unknown</label>
+                    </div>
+                </div>
+                <div class="targeting-column">
+                    <h4>Age Range</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" checked> 18-24</label>
+                        <label><input type="checkbox" checked> 25-34</label>
+                        <label><input type="checkbox" checked> 35-44</label>
+                        <label><input type="checkbox" checked> 45-54</label>
+                        <label><input type="checkbox" checked> 55-64</label>
+                        <label><input type="checkbox" checked> 65+</label>
+                        <label><input type="checkbox" checked> Unknown</label>
+                    </div>
+                </div>
+                <div class="targeting-column">
+                    <h4>Parental status</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" checked> Parent</label>
+                        <label><input type="checkbox" checked> Not a parent</label>
+                        <label><input type="checkbox" checked> Unknown</label>
+                    </div>
+                </div>
+                <div class="targeting-column">
+                    <h4>Household income</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" checked> Top 10%</label>
+                        <label><input type="checkbox" checked> Top 11-20%</label>
+                        <label><input type="checkbox" checked> Top 21-30%</label>
+                        <label><input type="checkbox" checked> Top 31-40%</label>
+                        <label><input type="checkbox" checked> Top 41-50%</label>
+                        <label><input type="checkbox" checked> Lower 50%</label>
+                        <label><input type="checkbox" checked> Unknown</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-demographics-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="geography-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3>Geography</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div class="geography-body">
+                <div class="geography-search-area">
+                    <div class="form-group">
+                        <label for="geo-search">Search for regions</label>
+                        <input type="text" id="geo-search" placeholder="States, Cities, Postal Codes, Airports, Universities">
+                    </div>
+                    <div id="geo-search-results">
+                        </div>
+                    <button type="button" class="secondary-btn hidden" id="clear-all-geo-btn">Clear all</button>
+                </div>
+                <div class="geography-map-area">
+                    <div class="map-controls">
+                        <button class="map-tab active">Map</button>
+                        <button class="map-tab">Satellite</button>
+                    </div>
+                    <div class="map-placeholder">
+                        <p>Map will be displayed here.</p>
+                        <img src="https://placehold.co/400x300/e8f0fe/1a73e8?text=Map+Placeholder" alt="Map Placeholder" style="width: 100%; height: auto;">
+                    </div>
+                    <div id="geo-targeted-locations" class="targeted-locations-list">
+                        <h4>Targeted locations</h4>
+                        <ul id="geo-list">
+                            </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-geography-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="language-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3>Language</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div class="language-body">
+                <div class="language-search-area">
+                    <div class="form-group">
+                        <label for="lang-search">Search for languages to include or exclude</label>
+                        <input type="text" id="lang-search" placeholder="">
+                    </div>
+                    <div id="lang-search-results" class="language-list">
+                        <div class="language-item"><label><input type="checkbox" value="English" checked> English</label></div>
+                        <div class="language-item"><label><input type="checkbox" value="Hindi"> Hindi</label></div>
+                        <div class="language-item"><label><input type="checkbox" value="Spanish"> Spanish</label></div>
+                        <div class="language-item"><label><input type="checkbox" value="French"> French</label></div>
+                        <div class="language-item"><label><input type="checkbox" value="German"> German</label></div>
+                        <div class="language-item"><label><input type="checkbox" value="Bengali"> Bengali</label></div>
+                        <div class="language-item"><label><input type="checkbox" value="Marathi"> Marathi</label></div>
+                        <div class="language-item"><label><input type="checkbox" value="Gujarati"> Gujarati</label></div>
+                    </div>
+                </div>
+                <div class="language-selection-area">
+                    <h4>Current selections</h4>
+                    <ul id="selected-languages-list">
+                        <li class="selected-language-item">English <button type="button" class="close-btn">&times;</button></li>
+                    </ul>
+                    <button type="button" class="secondary-btn hidden" id="clear-all-lang-btn">Clear all</button>
+                </div>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-language-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="brand-safety-io-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Brand safety</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="bs-digital-content-labels">Digital content label exclusions</label>
+                <select id="bs-digital-content-labels">
+                    <option>2 items excluded</option>
+                    <option>None</option>
+                    <option>Content suitable for all audiences (DL-G)</option>
+                    <option>Content suitable for families (DL-GA)</option>
+                    <option>Content suitable for younger teens (DL-PG)</option>
+                    <option>Content suitable for teens (DL-T)</option>
+                    <option>Content suitable for mature audiences (DL-MA)</option>
+                    <option>All content</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Sensitive category exclusions</label>
+                <div class="checkbox-group category-exclusions-grid">
+                    <label><input type="checkbox"> Alcohol</label>
+                    <label><input type="checkbox"> Controversial social issues</label>
+                    <label><input type="checkbox"> Crime</label>
+                    <label><input type="checkbox"> Death & tragedy</label>
+                    <label><input type="checkbox"> Downloads & sharing</label>
+                    <label><input type="checkbox"> Gambling</label>
+                    <label><input type="checkbox"> Gross</label>
+                    <label><input type="checkbox"> Hate speech</label>
+                    <label><input type="checkbox"> Military & international conflicts</label>
+                    <label><input type="checkbox"> News</label>
+                    <label><input type="checkbox"> Obscenity</label>
+                    <label><input type="checkbox"> Politics</label>
+                    <label><input type="checkbox"> Profanity</label>
+                    <label><input type="checkbox"> Recreational drugs</label>
+                    <label><input type="checkbox"> Religion</label>
+                    <label><input type="checkbox"> Sensitive social issues</label>
+                    <label><input type="checkbox"> Sexual</label>
+                    <label><input type="checkbox"> Shocking</label>
+                    <label><input type="checkbox"> Suggestive</label>
+                    <label><input type="checkbox"> Tobacco</label>
+                    <label><input type="checkbox"> Tragedy</label>
+                    <label><input type="checkbox"> Video games (Violent)</label>
+                    <label><input type="checkbox"> Weapons</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Other verification services</label>
+                <div class="verification-services-section">
+                    <div class="service-option">
+                        <span>No first-party verification</span>
+                        <button type="button" class="secondary-btn">Add by CPM</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-brand-safety-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewability-io-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Viewability</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="viewability-open-measurement">Open Measurement</label>
+                <p class="form-hint">Targets only general purpose mobile and web inventory</p>
+                <select id="viewability-open-measurement">
+                    <option>All</option>
+                    <option>None</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="viewability-active-view">Active View</label>
+                <p class="form-hint">Predictable viewability</p>
+                <select id="viewability-active-view">
+                    <option>50% or greater</option>
+                    <option>10% or greater</option>
+                    <option>20% or greater</option>
+                    <option>30% or greater</option>
+                    <option>40% or greater</option>
+                    <option>60% or greater</option>
+                    <option>70% or greater</option>
+                    <option>80% or greater</option>
+                    <option>90% or greater</option>
+                    <option>All impressions (ignore viewability)</option>
+                </select>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-viewability-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="apps-urls-io-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3>Apps & URLs</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div class="apps-urls-body">
+                <nav class="apps-urls-tabs">
+                    <span class="app-url-tab active" data-tab="app-url-channels">Channels</span>
+                    <span class="app-url-tab" data-tab="app-url-collections">Collections</span>
+                    <span class="app-url-tab" data-tab="app-url-urls">URLs</span>
+                    <span class="app-url-tab" data-tab="app-url-apps">Apps</span>
+                </nav>
+                <div id="app-url-channels-content" class="app-url-tab-content active">
+                    <p class="form-hint">Dynamic groups of publisher-curated YouTube inventory</p>
+                    <div class="form-group">
+                        <label for="channel-search">Search for channels</label>
+                        <input type="text" id="channel-search" placeholder="Search by channel name">
+                    </div>
+                    <div class="channel-list">
+                        <div class="channel-item"><label><input type="checkbox" value="Cooking Channel"> Cooking Channel</label><button class="edit-channel-rules-btn icon-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button></div>
+                        <div class="channel-item"><label><input type="checkbox" value="Travel Vlogs"> Travel Vlogs</label><button class="edit-channel-rules-btn icon-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button></div>
+                    </div>
+                </div>
+                <div id="app-url-collections-content" class="app-url-tab-content">
+                    <p class="form-hint">Dynamic groups of inventory managed with content categories and genres</p>
+                    <div class="form-group">
+                        <label for="collection-search">Search for collections</label>
+                        <input type="text" id="collection-search" placeholder="Search by collection name">
+                    </div>
+                    <div class="collection-list">
+                        <div class="collection-item"><label><input type="checkbox" value="News Collection"> News Collection</label></div>
+                        <div class="collection-item"><label><input type="checkbox" value="Sports Highlights"> Sports Highlights</label></div>
+                    </div>
+                </div>
+                <div id="app-url-urls-content" class="app-url-tab-content">
+                    <div class="form-group">
+                        <textarea id="url-list" rows="10" placeholder="Enter a list of URLs, one per line"></textarea>
+                    </div>
+                    <div class="radio-group">
+                        <label><input type="radio" name="url-action" value="include" checked> Include</label>
+                        <label><input type="radio" name="url-action" value="exclude"> Exclude</label>
+                    </div>
+                    <button type="button" class="secondary-btn">Add multiple app URLs & sites</button>
+                    <button type="button" class="secondary-btn">Download current list</button>
+                </div>
+                <div id="app-url-apps-content" class="app-url-tab-content">
+                    <div class="form-group">
+                        <label for="app-search">Search for apps</label>
+                        <input type="text" id="app-search" placeholder="Search by app name or package ID">
+                    </div>
+                    <div class="app-list">
+                        <div class="app-item"><label><input type="checkbox" value="YouTube"> YouTube</label></div>
+                        <div class="app-item"><label><input type="checkbox" value="Netflix"> Netflix</label></div>
+                    </div>
+                    <div class="radio-group">
+                        <label><input type="radio" name="app-action" value="include" checked> Include</label>
+                        <label><input type="radio" name="app-action" value="exclude"> Exclude</label>
+                    </div>
+                    <button type="button" class="secondary-btn">Add multiple apps URLs & sites</button>
+                    <button type="button" class="secondary-btn">Download current list</button>
+                </div>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-apps-urls-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="keywords-io-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Keywords</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <p class="form-hint">You can use text, images and video to make your targeting settings. <a href="#">Learn more</a></p>
+            <div class="form-group">
+                <label>Add keywords to include or exclude</label>
+                <textarea id="keywords-io-input" rows="5" placeholder="Enter a list of keywords, either one per line or separated by commas."></textarea>
+            </div>
+            <div class="radio-group">
+                <label><input type="radio" name="keywords-action" value="include" checked> Include</label>
+                <label><input type="radio" name="keywords-action" value="exclude"> Exclude</label>
+            </div>
+            <div class="form-group">
+                <label>Keyword suggestions</label>
+                <p class="form-hint">Suggestions are generated based on existing keywords and or landing page URLs.</p>
+                <button type="button" class="secondary-btn">Generate suggestions</button>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-keywords-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="categories-genres-io-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Categories & genres</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <p class="form-hint">Dynamic group of webpages and apps managed with content categories and genres</p>
+            <div class="form-group">
+                <label>Choose a group</label>
+                <div class="category-tree">
+                    <div class="category-item"><label><input type="checkbox" checked> Arts & Entertainment</label></div>
+                    <div class="category-item"><label><input type="checkbox" checked> Autos & Vehicles</label></div>
+                    <div class="category-item"><label><input type="checkbox" checked> Beauty & Fitness</label></div>
+                    <div class="category-item"><label><input type="checkbox" checked> Books & Literature</label></div>
+                    <div class="category-item"><label><input type="checkbox" checked> Business & Industrial</label></div>
+                    <div class="category-item"><label><input type="checkbox" checked> Computers & Electronics</label></div>
+                    <div class="category-item"><label><input type="checkbox" checked> Financial</label></div>
+                    <div class="category-item"><label><input type="checkbox" checked> Food & Drinks</label></div>
+                    <div class="category-item"><label><input type="checkbox" checked> Games</label></div>
+                    <div class="category-item"><label><input type="checkbox" checked> Health</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Hobbies & Leisure" checked> Hobbies & Leisure</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Home & Garden" checked> Home & Garden</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Internet & Telecom" checked> Internet & Telecom</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Jobs & Education" checked> Jobs & Education</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Law & Government" checked> Law & Government</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="News" checked> News</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Online Communities" checked> Online Communities</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="People & Society" checked> People & Society</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Pets & Animals" checked> Pets & Animals</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Real Estate" checked> Real Estate</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Reference" checked> Reference</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Science" checked> Science</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Shopping" checked> Shopping</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Sports" checked> Sports</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Travel" checked> Travel</label></div>
+                    <div class="category-item"><label><input type="checkbox" value="Vehicles" checked> Vehicles</label></div>
+                </div>
+            </div>
+            <p class="form-hint">Automatically apply optimal targeting across genres</p>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-categories-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="position-io-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3>Position</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div class="position-settings-grid">
+                <div class="position-column">
+                    <h4>Select positions on screen</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" checked> Above the fold</label>
+                        <label><input type="checkbox" checked> Below the fold</label>
+                        <label><input type="checkbox" checked> Unknown</label>
+                    </div>
+                </div>
+                <div class="position-column">
+                    <h4>Select positions in content</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" checked> In-feed</label>
+                        <label><input type="checkbox" checked> In-article</label>
+                        <label><input type="checkbox" checked> In-banner</label>
+                        <label><input type="checkbox" checked> In-stream</label>
+                        <label><input type="checkbox" checked> Native</label>
+                        <label><input type="checkbox" checked> Pre-roll</label>
+                        <label><input type="checkbox" checked> Mid-roll</label>
+                        <label><input type="checkbox" checked> Post-roll</label>
+                        <label><input type="checkbox" checked> Interstitial</label>
+                        <label><input type="checkbox" checked> Rewarded</label>
+                        <label><input type="checkbox" checked> Unknown</label>
+                    </div>
+                </div>
+                <div class="position-column">
+                    <h4>Select positions in context</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" checked> In-game</label>
+                        <label><input type="checkbox" checked> In-app</label>
+                        <label><input type="checkbox" checked> In-store</label>
+                        <label><input type="checkbox" checked> In-web</label>
+                        <label><input type="checkbox" checked> On the top (above the fold of a page)</label>
+                        <label><input type="checkbox" checked> Off-screen (e.g., ad driven by background activity)</label>
+                        <label><input type="checkbox" checked> Below the fold (ads shown below or between content/activity)</label>
+                        <label><input type="checkbox" checked> Unknown</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-position-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="audio-video-io-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Audio & video</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Video player size</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" checked> Unknown</label>
+                    <label><input type="checkbox" checked> Large (1280x720 to 1920x1080 pixels)</label>
+                    <label><input type="checkbox" checked> Medium (853x480 to 1279x719 pixels)</label>
+                    <label><input type="checkbox" checked> Small (0x0 to 852x479 pixels)</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Delivery type</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="delivery-type" value="live" checked> Live streamed content</label>
+                    <label><input type="radio" name="delivery-type" value="on-demand"> On-demand content</label>
+                    <label><input type="radio" name="delivery-type" value="unknown"> Unknown</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Audio content type</label>
+                <p class="form-hint">Audio only</p>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" checked> Webstream music</label>
+                    <label><input type="checkbox" checked> Podcasts</label>
+                    <label><input type="checkbox" checked> News/current events</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Duration (seconds)</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" checked> 0-1</label>
+                    <label><input type="checkbox" checked> 2-5</label>
+                    <label><input type="checkbox" checked> 6-10</label>
+                    <label><input type="checkbox" checked> 11-15</label>
+                    <label><input type="checkbox" checked> 16-20</label>
+                    <label><input type="checkbox" checked> 21-30</label>
+                    <label><input type="checkbox" checked> 31-60</label>
+                    <label><input type="checkbox" checked> 61-90</label>
+                    <label><input type="checkbox" checked> 91-120</label>
+                    <label><input type="checkbox" checked> 120+</label>
+                    <label><input type="checkbox" checked> Unknown</label>
+                </div>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-audio-video-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="user-rewarded-content-io-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>User rewarded content</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <p class="form-hint">These settings apply to non-skippable video formats and rewarded content only</p>
+            <div class="checkbox-group">
+                <label><input type="checkbox" checked> Show user rewarded content</label>
+                <label><input type="checkbox" checked> Don't show user rewarded content</label>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-user-rewarded-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="environment-io-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Environment</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <h4>Include the following environments</h4>
+            <div class="checkbox-group" style="margin-top: 20px;">
+                <label><input type="checkbox" checked> Web</label>
+                <label><input type="checkbox" checked> App</label>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-environment-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="li-audience-lists-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3>Audience lists</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div class="search-and-list-layout">
+                <div class="search-column">
+                    <input type="text" placeholder="Search by name or ID">
+                    <div class="list-container">
+                        <div class="list-item"><label><input type="checkbox"> Homepage Visitors (Last 30d)</label></div>
+                        <div class="list-item"><label><input type="checkbox"> High-Intent Car Buyers</label></div>
+                        <div class="list-item"><label><input type="checkbox"> Cart Abandoners (7d)</label></div>
+                    </div>
+                </div>
+                <div class="selection-column">
+                    <h4>Included (targeting)</h4>
+                    <div class="list-container" id="li-included-audiences">
+                        </div>
+                     <h4>Excluded (negative targeting)</h4>
+                    <div class="list-container" id="li-excluded-audiences">
+                        </div>
+                </div>
+            </div>
+             <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-li-audience-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+    <div id="li-day-time-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px;">
+             <div class="modal-header">
+                <h3>Day & time</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <p class="form-hint">All times are shown in the advertiser's time zone.</p>
+            <div id="day-parting-grid">
+                </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-li-day-time-btn">Apply</button>
+            </div>
+        </div>
+    </div>
+     <div id="li-technology-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3>Technology</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            <div class="targeting-grid">
+                <div class="targeting-column">
+                    <h4>Browser</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" checked> Chrome</label>
+                        <label><input type="checkbox" checked> Firefox</label>
+                        <label><input type="checkbox" checked> Safari</label>
+                        <label><input type="checkbox" checked> Edge</label>
+                        <label><input type="checkbox" checked> Other</label>
+                    </div>
+                </div>
+                <div class="targeting-column">
+                    <h4>Device</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" checked> Desktop</label>
+                        <label><input type="checkbox" checked> Smartphone</label>
+                        <label><input type="checkbox" checked> Tablet</label>
+                        <label><input type="checkbox" checked> Connected TV</label>
+                    </div>
+                </div>
+                <div class="targeting-column">
+                    <h4>Connection speed</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" checked> Broadband</label>
+                        <label><input type="checkbox" checked> 4G</label>
+                        <label><input type="checkbox" checked> 3G</label>
+                        <label><input type="checkbox" checked> 2G</label>
+                    </div>
+                </div>
+                <div class="targeting-column">
+                    <h4>Carrier and ISP</h4>
+                    <p class="form-hint">Search for specific carriers...</p>
+                    <input type="text" placeholder="e.g., Jio, Airtel">
+                </div>
+            </div>
+            <div class="form-navigation" style="justify-content: flex-end;">
+                <button type="button" class="secondary-btn close-btn">Cancel</button>
+                <button type="button" class="create-btn apply-li-technology-btn">Apply</button>
+            </div>
         </div>
     </div>
 
